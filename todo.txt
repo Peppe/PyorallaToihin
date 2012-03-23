@@ -1,0 +1,21 @@
+TODO
+
+show info box with url after registering.
+company stats
+RegisterCompanyForm - henkilöstömäärä - better component
+mail after registering
+backend
+edit person
+delete person
+context help for km field
+theme
+competition stats
+export companies to CSV
+push
+
+DONE
+localization framework
+extracting strings into constants
+writing fi localization property file
+writing se localization property file
+writing en localization property file

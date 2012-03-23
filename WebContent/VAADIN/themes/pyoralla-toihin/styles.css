@@ -1,0 +1,18 @@
+@import url(chameleon-green.css);
+
+@import url(header.css);
+@import url(login.css);
+@import url(company.css);
+
+.v-filterselect{
+	padding-right: 20px;
+}
+
+input.v-paintable.v-textfield[type="text"], .v-filterselect {
+height: 2em;
+}
+
+body input.v-filterselect-input[type="text"] {
+	padding:0;
+	padding-left: 0.6em;
+}

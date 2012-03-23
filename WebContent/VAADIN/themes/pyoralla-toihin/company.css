@@ -1,0 +1,155 @@
+.company-layout {
+	margin:0 auto;
+}
+
+.company-stats {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.company-stats .v-csslayout-margin{
+	background-color: rgb(218,227,208);
+	border: 2px solid rgb(118,127,108);
+	
+}
+.company-stats .v-label {
+	padding-left: 5px;
+	
+}
+.company-stats-line-height .v-csslayout-container{
+	line-height:126px;
+}
+
+.company-stats-label {
+	text-align:center
+}
+.info-bar {
+	padding:20px;
+}
+
+.info-bar .v-label {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.info-bar .label1 {
+	margin-left:100px;
+}
+
+.info-bar .label2 {
+	margin-left:100px;
+}
+
+.info-bar .label3 {
+	margin-left:50px;
+}
+
+.add-user-button .v-button-wrap {
+	padding-top:20px
+}
+
+.add-user-button-margins {
+	display:inline-block;
+	vertical-align: middle;
+}
+
+.add-user input.v-paintable.v-textfield[type="text"] {
+	height: 24px;
+}
+
+body .add-user input.v-textfield,
+.add-user .v-filterselect .v-filterselect-input {
+	font-size: 1.3em;
+}
+
+.add-user .v-filterselect {
+	padding-top: .3em;
+	padding-bottom: .3em;
+}
+
+.add-user input.v-textfield[type=text] {
+	padding: .6em;
+}
+
+add-user .v-button {
+	font-size: 1.2em;
+}
+
+.employee-row .v-label,
+.header-row .v-label {
+	display:inline-block;
+}
+
+.selected {
+	background-color: #ffa;
+}
+
+.today-button {
+	vertical-align: middle;
+}
+
+.info-bar-right {
+	display:inline-block;
+	vertical-align: middle;
+}
+
+.info-bar-right .v-csslayout-margin{
+	padding-left:20px;
+}
+
+.today-button .v-button-wrap .v-button-caption{
+	white-space: normal;
+	line-height:92px;	
+}
+
+.yes, .no {
+	border-radius:0;
+}
+
+.yes.v-button .v-button-caption,
+.no.v-button .v-button-caption {
+	height:24px;
+	width:24px;
+	display:inline-block;
+}
+
+.yes.v-button .v-button-wrap,
+.no.v-button .v-button-wrap,
+.yes.v-button:active .v-button-wrap,
+.no.v-button:active .v-button-wrap{
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+.new-user-layout{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.yes.v-button .v-button-wrap .v-button-caption {
+	background:transparent url('img/check.png') no-repeat 0 0;
+}
+
+.km-label {
+	text-align:right;
+	margin-right:10px;
+}
+
+.center-label {
+	text-align:center;
+}
+
+.employee-table {
+    -o-user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.employee-table .v-label{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}

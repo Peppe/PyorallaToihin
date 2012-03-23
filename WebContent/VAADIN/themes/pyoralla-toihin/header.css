@@ -1,0 +1,49 @@
+.header {
+	margin:0 auto;
+}
+
+.valonia-logo {
+	display: inline-block;
+}
+
+.language-layout {
+	display: inline-block;
+	float: right;	
+}
+.v-button.flag_fi, 
+.v-button.flag_se, 
+.v-button.flag_en,
+.v-button.flag_fi .v-button-wrap, 
+.v-button.flag_se .v-button-wrap, 
+.v-button.flag_en .v-button-wrap {
+	width:30px;
+	height:20px;
+	border: none;
+	border-radius: 0;
+	padding:0;
+	margin:0;
+	margin-right:5px;
+	vertical-align: middle;
+}
+
+.v-button.flag_fi {
+	background:transparent url('img/flag_fi.png') no-repeat 0 0;
+}
+
+
+.v-button.flag_se {
+	background:transparent url('img/flag_se.png') no-repeat 0 0;
+}
+
+.v-button.flag_en {
+	background:transparent url('img/flag_en.png') no-repeat 0 0;
+}
+
+.change-language{
+	height:20px;
+	line-height:14px;
+	padding-top:3px;
+	padding-bottom:3px;
+	vertical-align: middle;
+	margin-right:10px;
+}
