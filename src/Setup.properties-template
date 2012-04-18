@@ -1,0 +1,5 @@
+# Copy this file with the name Setup.properties, and set your settings for your h2 database
+
+url = jdbc:h2:tcp://localhost/~/pyorallatoihin
+user = sa
+password =
