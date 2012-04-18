@@ -1,16 +1,72 @@
 package fi.valonia.pyorallatoihin.views.login;
 
+import java.util.List;
+
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Root;
+import com.vaadin.ui.themes.ChameleonTheme;
+
+import fi.valonia.pyorallatoihin.Messages;
+import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
+import fi.valonia.pyorallatoihin.data.CompanyInfo;
 
 public class CompetitionStats extends CssLayout {
+    private static final long serialVersionUID = 8524524551101097444L;
 
-    public CompetitionStats() {
+    public CompetitionStats(List<CompanyInfo> companies) {
         addStyleName("competition-stats");
-        Label label = new Label("[STATS]");
-        label.addStyleName("competition-stats-label");
-        addComponent(label);
+
         setWidth("600px");
         setHeight("150px");
+
+        PyorallaToihinRoot root = (PyorallaToihinRoot) Root.getCurrentRoot();
+
+        GridLayout layout = new GridLayout(5, 1);
+        Label position = new Label(root.getMessages().getString(
+                Messages.competition_company_position));
+        Label name = new Label(root.getMessages().getString(
+                Messages.competition_company_name));
+        Label workers = new Label(root.getMessages().getString(
+                Messages.competition_company_workers));
+        Label participants = new Label(root.getMessages().getString(
+                Messages.competition_company_participants));
+        Label markers = new Label(root.getMessages().getString(
+                Messages.competition_company_markers));
+
+        position.addStyleName(ChameleonTheme.LABEL_H4);
+        name.addStyleName(ChameleonTheme.LABEL_H4);
+        workers.addStyleName(ChameleonTheme.LABEL_H4);
+        participants.addStyleName(ChameleonTheme.LABEL_H4);
+        markers.addStyleName(ChameleonTheme.LABEL_H4);
+
+        layout.addComponent(position);
+        layout.addComponent(name);
+        layout.addComponent(workers);
+        layout.addComponent(participants);
+        layout.addComponent(markers);
+        int i = 1;
+        if (companies != null) {
+            for (CompanyInfo companyInfo : companies) {
+                Label compPosition = new Label(i++ + "");
+                Label compName = new Label(companyInfo.getName());
+                Label compWorkers = new Label(companyInfo.getSize() + "");
+                Label compParticipants = new Label(companyInfo.getRegistered()
+                        + "");
+                Label compMarkers = new Label(companyInfo.getTotalMarkers()
+                        + "");
+                layout.addComponent(compPosition);
+                layout.addComponent(compName);
+                layout.addComponent(compWorkers);
+                layout.addComponent(compParticipants);
+                layout.addComponent(compMarkers);
+            }
+        }
+        layout.setMargin(true);
+        layout.setWidth("100%");
+        layout.setHeight(null);
+        addComponent(layout);
     }
+
 }

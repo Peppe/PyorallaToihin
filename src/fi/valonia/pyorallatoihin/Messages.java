@@ -6,6 +6,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages implements Serializable {
+    private static final long serialVersionUID = -3651500289758153839L;
 
     public static final String foo = "foo";
 
@@ -30,6 +31,7 @@ public class Messages implements Serializable {
     public static final String hi = "hi";
     public static final String remember_to_bookmark = "remember_to_bookmark";
     public static final String company_name_can_not_be_empty = "company_name_can_not_be_empty";
+    public static final String company_size_numeric = "company_size_numeric";
     public static final String contact_person_info_can_not_be_empty = "contact_person_info_can_not_be_empty";
     public static final String company_name_already_exists = "company_name_already_exists";
     public static final String company_info = "company_info";
@@ -39,15 +41,42 @@ public class Messages implements Serializable {
     public static final String company_street = "company_street";
     public static final String company_zip = "company_zip";
     public static final String company_city = "company_city";
+    public static final String competition_info = "competition_info";
+    public static final String contact_person_valonia = "contact_person_valonia";
     public static final String contact_person_info = "contact_person_info";
     public static final String contact_person_name = "contact_person_name";
     public static final String contact_person_email = "contact_person_email";
     public static final String contact_person_phone = "contact_person_phone";
-    public static final String size_1_to_4 = "size_1_to_4";
-    public static final String size_5_to_20 = "size_5_to_20";
-    public static final String size_21_to_100 = "size_21_to_100";
-    public static final String size_over_100 = "size_over_100";
+    public static final String contact_person_fax = "contact_person_fax";
+    public static final String heard_from = "heard_from";
+    public static final String first_time = "first_time";
     public static final String register = "register";
+
+    public static final String company_stats_employees = "company_stats_employees";
+    public static final String company_stats_participants = "company_stats_participants";
+    public static final String company_stats_markers = "company_stats_markers";
+    public static final String company_stats_km = "company_stats_km";
+    public static final String company_stats_times_per_employee = "company_stats_times_per_employee";
+
+    public static final String company_registed_to_competition = "company_registed_to_competition";
+    public static final String company_share_token_start = "company_share_token_start";
+    public static final String company_share_token_end = "company_share_token_end";
+
+    public static final String competition_company_position = "competition_company_position";
+    public static final String competition_company_name = "competition_company_name";
+    public static final String competition_company_workers = "competition_company_workers";
+    public static final String competition_company_participants = "competition_company_participants";
+    public static final String competition_company_markers = "competition_company_markers";
+
+    public static final String heard_from_email_internal = "heard_from_email_internal";
+    public static final String heard_from_email_external = "heard_from_email_external";
+    public static final String heard_from_letter = "heard_from_letter";
+    public static final String heard_from_internet = "heard_from_internet";
+    public static final String heard_from_paper = "heard_from_paper";
+    public static final String heard_from_radio = "heard_from_radio";
+    public static final String heard_from_library = "heard_from_library";
+    public static final String heard_from_sports_center = "heard_from_sports_center";
+    public static final String heard_from_other = "heard_from_other";
 
     public static final String BICYCLE = "BICYCLE";
     public static final String WALKING = "WALKING";

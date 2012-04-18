@@ -8,11 +8,10 @@
 	padding-right: 20px;
 }
 
-input.v-paintable.v-textfield[type="text"], .v-filterselect {
-height: 2em;
+body input.v-filterselect-input[type="text"] {
+	padding: 2px;
 }
 
-body input.v-filterselect-input[type="text"] {
-	padding:0;
-	padding-left: 0.6em;
+input.v-paintable.v-textfield[type="text"], .v-filterselect {
+	height:2em;
 }

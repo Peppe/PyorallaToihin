@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Season implements Serializable {
-
+    private static final long serialVersionUID = -4947256652719451538L;
     private int id;
     private String name;
     private Date startDate;

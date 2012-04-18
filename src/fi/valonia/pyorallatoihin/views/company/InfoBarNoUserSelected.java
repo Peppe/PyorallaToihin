@@ -5,6 +5,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -19,21 +20,25 @@ import fi.valonia.pyorallatoihin.data.Employee;
 import fi.valonia.pyorallatoihin.data.Sport;
 
 public class InfoBarNoUserSelected extends CssLayout {
+    private static final long serialVersionUID = -7855678756157150282L;
 
-    private CompanyScreen companyScreen;
-    private Button addUserButton;
+    private final CompanyScreen companyScreen;
+    private final Button addUserButton;
     private final PyorallaToihinRoot root;
-    private CssLayout margins;
+    private final CssLayout margins;
 
     public InfoBarNoUserSelected(PyorallaToihinRoot root,
             CompanyScreen companyScreen) {
         this.root = root;
         this.companyScreen = companyScreen;
-        setHeight("110px");
+        setHeight("130px");
         setWidth("1000px");
         addStyleName("info-bar");
 
         ClickListener addUserClickListener = new ClickListener() {
+            private static final long serialVersionUID = 4299103971361663492L;
+
+            @Override
             public void buttonClick(ClickEvent event) {
                 showNewUserForm();
             }
@@ -48,10 +53,10 @@ public class InfoBarNoUserSelected extends CssLayout {
         addUserButton.addStyleName("add-user-button");
         addUserButton.setIcon(new ThemeResource("img/plus.png"));
         Label orLabel = new Label(root.getMessages().getString(Messages.or));
-        Label clickNameLabel = new Label(root.getMessages().getString(
-                Messages.click_your_name));
         Label clickDaysLabel = new Label(root.getMessages().getString(
                 Messages.mark_in_table));
+        Label clickNameLabel = new Label(root.getMessages().getString(
+                Messages.click_your_name));
 
         margins.setWidth("250px");
         orLabel.setWidth("50px");
@@ -65,9 +70,11 @@ public class InfoBarNoUserSelected extends CssLayout {
 
         margins.addComponent(addUserButton);
         addComponent(margins);
-        addComponent(orLabel);
-        addComponent(clickNameLabel);
-        addComponent(clickDaysLabel);
+        if (companyScreen.getCompany().getEmployees().size() > 0) {
+            addComponent(orLabel);
+            addComponent(clickDaysLabel);
+            addComponent(clickNameLabel);
+        }
     }
 
     private void showNewUserForm() {
@@ -94,28 +101,43 @@ public class InfoBarNoUserSelected extends CssLayout {
         final TextField km = new TextField();
         km.setInputPrompt(root.getMessages().getString(Messages.km));
         km.setColumns(4);
+
         Button add = new Button(root.getMessages().getString(Messages.add),
                 new ClickListener() {
+                    private static final long serialVersionUID = -4940737576260162546L;
 
+                    @Override
                     public void buttonClick(ClickEvent event) {
                         Employee employee = new Employee();
                         employee.setName(name.getValue());
                         employee.setSport((Sport) sport.getValue());
                         try {
-                            // TODO only >0 values.
-                            employee.setDistance(Integer.parseInt(km.getValue()));
+                            String kmString = km.getValue();
+                            kmString = kmString.replace(',', '.');
+                            double kmDouble = Double.parseDouble(kmString);
+                            if (kmDouble >= 0) {
+                                employee.setDistance(kmDouble);
+                                companyScreen.addEmployee(employee);
+                            }
+                            // TODO only >0 values message.
                         } catch (NumberFormatException e) {
+                            e.printStackTrace();
                             return;
-                            // TODO message on failiure
+                            // TODO message on failure
                         }
-                        companyScreen.addEmployee(employee);
                     }
                 });
         add.setWidth("100%");
+
+        name.addStyleName(ChameleonTheme.TEXTFIELD_BIG);
+        sport.addStyleName(ChameleonTheme.SELECT_BIG);
+        km.addStyleName(ChameleonTheme.TEXTFIELD_BIG);
+
         kmAndAdd.addComponent(km);
         kmAndAdd.addComponent(add);
         kmAndAdd.setExpandRatio(add, 1);
         kmAndAdd.setSpacing(true);
+        kmAndAdd.setComponentAlignment(add, Alignment.MIDDLE_LEFT);
 
         newUserLayout.addComponent(name);
         newUserLayout.addComponent(sport);

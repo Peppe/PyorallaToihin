@@ -1,6 +1,9 @@
 package fi.valonia.pyorallatoihin.interfaces;
 
+import java.util.List;
+
 import fi.valonia.pyorallatoihin.data.Company;
+import fi.valonia.pyorallatoihin.data.CompanyInfo;
 import fi.valonia.pyorallatoihin.data.Employee;
 
 public interface ICompanyService {
@@ -40,4 +43,8 @@ public interface ICompanyService {
             throws EmployeeExistsInCompanyException;
 
     public void updateEmployee(Company company, Employee employee);
+
+    public List<CompanyInfo> getAllCompanyInfos();
+
+    public List<Company> getAllCompanies();
 }

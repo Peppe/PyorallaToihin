@@ -1,6 +1,8 @@
 package fi.valonia.pyorallatoihin.views.login;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
@@ -8,22 +10,24 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ChameleonTheme;
 
 import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
+import fi.valonia.pyorallatoihin.components.Spacer;
 import fi.valonia.pyorallatoihin.data.Company;
-import fi.valonia.pyorallatoihin.data.Company.CompanySize;
 import fi.valonia.pyorallatoihin.interfaces.CompanyNameInUseException;
 
 public class RegisterCompanyForm extends VerticalLayout {
+    private static final long serialVersionUID = 3185151633819175680L;
 
     Company company = new Company();
     FieldGroup fieldGroup = new FieldGroup(new BeanItem<Company>(company));
@@ -34,7 +38,10 @@ public class RegisterCompanyForm extends VerticalLayout {
 
     private final PyorallaToihinRoot root;
 
-    private ClickListener registerListener = new ClickListener() {
+    private final ClickListener registerListener = new ClickListener() {
+        private static final long serialVersionUID = 7715075013147891378L;
+
+        @Override
         public void buttonClick(ClickEvent event) {
             try {
 
@@ -42,6 +49,12 @@ public class RegisterCompanyForm extends VerticalLayout {
                         || companyName.getValue().equals("")) {
                     showError(root.getMessages().getString(
                             Messages.company_name_can_not_be_empty));
+                    return;
+                }
+                if (companySize.getValue() == null
+                        || companySize.getValue().equals("")) {
+                    showError(root.getMessages().getString(
+                            Messages.company_size_numeric));
                     return;
                 }
                 if (contactPersonName.getValue() == null
@@ -53,6 +66,9 @@ public class RegisterCompanyForm extends VerticalLayout {
                     return;
                 }
                 fieldGroup.commit();
+                if ("Muulla".equals(company.getHeardFrom())) {
+                    company.setHeardFrom(heardFromOther.getValue());
+                }
                 PyorallaToihinRoot root = ((PyorallaToihinRoot) getRoot());
                 root.getCompanyService().createCompany(company);
                 root.showCompany(company);
@@ -64,6 +80,10 @@ public class RegisterCompanyForm extends VerticalLayout {
             }
         }
     };
+
+    private TextField companySize;
+
+    private TextField heardFromOther;
 
     public RegisterCompanyForm(PyorallaToihinRoot root) {
         this.root = root;
@@ -81,43 +101,21 @@ public class RegisterCompanyForm extends VerticalLayout {
         // splitter.setSpacing(true);
         GridLayout grid = createGrid();
 
-        OptionGroup companySize = new OptionGroup(root.getMessages().getString(
-                Messages.company_size));
-        companySize.addStyleName("company-size");
-        companySize.addContainerProperty("caption", String.class, "");
-        companySize.setItemCaptionPropertyId("caption");
-        Item item;
-        item = companySize.addItem(CompanySize.S1_4);
-        item.getItemProperty("caption").setValue(
-                root.getMessages().getString(Messages.size_1_to_4));
-        item = companySize.addItem(CompanySize.S5_20);
-        item.getItemProperty("caption").setValue(
-                root.getMessages().getString(Messages.size_5_to_20));
-        item = companySize.addItem(CompanySize.S21_100);
-        item.getItemProperty("caption").setValue(
-                root.getMessages().getString(Messages.size_21_to_100));
-        item = companySize.addItem(CompanySize.S_OVER_100);
-        item.getItemProperty("caption").setValue(
-                root.getMessages().getString(Messages.size_over_100));
-
         CssLayout spacer2 = new CssLayout();
         spacer2.setStyleName("register-company-spacer");
 
         Button register = new Button(root.getMessages().getString(
                 Messages.register), registerListener);
 
-        fieldGroup.bind(companySize, "size");
-
         addComponent(spacer);
         addComponent(grid);
-        addComponent(companySize);
         addComponent(spacer2);
         addComponent(register);
 
     }
 
     private GridLayout createGrid() {
-        GridLayout layout = new GridLayout(2, 4);
+        final GridLayout layout = new GridLayout(2, 8);
         layout.setSpacing(true);
         layout.setWidth("100%");
 
@@ -128,6 +126,11 @@ public class RegisterCompanyForm extends VerticalLayout {
                 Messages.company_name));
         companyName.setWidth("100%");
         companyName.setRequired(true);
+
+        companySize = new TextField(root.getMessages().getString(
+                Messages.company_size));
+        companySize.setWidth("100%");
+        companySize.setRequired(true);
 
         TextField companyStreet = new TextField(root.getMessages().getString(
                 Messages.company_address));
@@ -165,24 +168,94 @@ public class RegisterCompanyForm extends VerticalLayout {
                 .getString(Messages.contact_person_phone));
         contactPersonPhone.setWidth("100%");
 
-        fieldGroup.bind(contactPersonName, "contactName");
-        fieldGroup.bind(contactPersonEmail, "contactEmail");
-        fieldGroup.bind(contactPersonPhone, "contactPhone");
+        // TODO translate
+        final ComboBox heardFrom = new ComboBox(root.getMessages().getString(
+                Messages.heard_from));
+        heardFrom.addContainerProperty("caption", String.class, "");
+        Item item;
+        item = heardFrom.addItem("Sähköpostilla sisäisesti");
+        item.getItemProperty("caption").setValue(
+                root.getMessages()
+                        .getString(Messages.heard_from_email_internal));
+        item = heardFrom.addItem("Sähköpostilla ulkoisesti");
+        item.getItemProperty("caption").setValue(
+                root.getMessages()
+                        .getString(Messages.heard_from_email_external));
+        item = heardFrom.addItem("Kirjeenä");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_letter));
+        item = heardFrom.addItem("Internetistä");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_internet));
+        item = heardFrom.addItem("Lehdestä");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_paper));
+        item = heardFrom.addItem("Radiosta");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_radio));
+        item = heardFrom.addItem("Kirjastosta");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_library));
+        item = heardFrom.addItem("Liikuntapaikalta");
+        item.getItemProperty("caption")
+                .setValue(
+                        root.getMessages().getString(
+                                Messages.heard_from_sports_center));
+        item = heardFrom.addItem("Muulla");
+        item.getItemProperty("caption").setValue(
+                root.getMessages().getString(Messages.heard_from_other));
+        heardFrom.setItemCaptionPropertyId("caption");
+        heardFrom.setImmediate(true);
+        heardFromOther = new TextField();
+        heardFromOther.setWidth("100%");
+        heardFromOther.setEnabled(false);
+        final CheckBox firstTime = new CheckBox(root.getMessages().getString(
+                Messages.first_time));
+        firstTime.setWidth("100%");
 
+        heardFrom.addListener(new ValueChangeListener() {
+            private static final long serialVersionUID = -7726168308206839583L;
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                if ("Muulla".equals(heardFrom.getValue())) {
+                    heardFromOther.setEnabled(true);
+                } else {
+                    heardFromOther.setEnabled(false);
+                }
+            }
+        });
+        heardFrom.setWidth("100%");
+
+        Spacer spacer = new Spacer("100%", "20px");
+        companySize.setValue("");
         layout.addComponent(workInfo, 0, 0);
         layout.addComponent(companyName, 0, 1);
-        layout.addComponent(companyStreet, 0, 2);
-        layout.addComponent(zipAndCity, 0, 3);
-        layout.addComponent(contactPersonInfo);
-        layout.addComponent(contactPersonName);
-        layout.addComponent(contactPersonEmail);
-        layout.addComponent(contactPersonPhone);
+        layout.addComponent(companySize, 0, 2);
+        layout.addComponent(companyStreet, 0, 3);
+        layout.addComponent(zipAndCity, 0, 4);
+        layout.addComponent(contactPersonInfo, 1, 0);
+        layout.addComponent(contactPersonName, 1, 1);
+        layout.addComponent(contactPersonEmail, 1, 2);
+        layout.addComponent(contactPersonPhone, 1, 3);
+        layout.addComponent(heardFrom, 1, 4);
+        layout.addComponent(heardFromOther, 1, 5);
+        layout.addComponent(spacer, 0, 6, 1, 6);
+        layout.addComponent(firstTime, 0, 7, 1, 7);
 
         layout.setComponentAlignment(zipAndCity, Alignment.BOTTOM_LEFT);
+
         fieldGroup.bind(companyName, "name");
         fieldGroup.bind(companyStreet, "streetAddress");
         fieldGroup.bind(companyZip, "zip");
         fieldGroup.bind(companyCity, "city");
+
+        fieldGroup.bind(contactPersonName, "contactName");
+        fieldGroup.bind(contactPersonEmail, "contactEmail");
+        fieldGroup.bind(contactPersonPhone, "contactPhone");
+        fieldGroup.bind(companySize, "size");
+        fieldGroup.bind(heardFrom, "heardFrom");
+        fieldGroup.bind(firstTime, "firstTime");
 
         return layout;
     }

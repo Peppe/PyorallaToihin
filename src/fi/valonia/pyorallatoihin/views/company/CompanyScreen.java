@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Root;
 
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 import fi.valonia.pyorallatoihin.data.Company;
@@ -14,6 +16,7 @@ import fi.valonia.pyorallatoihin.interfaces.EmployeeExistsInCompanyException;
 import fi.valonia.pyorallatoihin.views.Header;
 
 public class CompanyScreen extends CssLayout {
+    private static final long serialVersionUID = 7374548785322979632L;
 
     private final PyorallaToihinRoot root;
     private Company company;
@@ -48,11 +51,11 @@ public class CompanyScreen extends CssLayout {
         layout = new CssLayout();
         layout.setWidth("1000px");
         layout.addStyleName("company-layout");
-        if (company.getTotalMarkers() > 0) {
-            stats = new CompanyStats(company);
-        } else {
-            stats = new CompanyStats();
-        }
+        Label companyName = new Label(company.getName() + " - "
+                + Root.getCurrentRoot().getApplication().getURL() + "#/"
+                + company.getToken());
+        companyName.addStyleName("company-name");
+        stats = new CompanyStats(company);
         infoBar = new InfoBarNoUserSelected(root, this);
 
         CssLayout spacer = new CssLayout();
@@ -62,6 +65,7 @@ public class CompanyScreen extends CssLayout {
         table.setStyleName("employee-table");
         table.setWidth("1000px");
 
+        layout.addComponent(companyName);
         layout.addComponent(stats);
         layout.addComponent(infoBar);
         layout.addComponent(spacer);
@@ -80,6 +84,7 @@ public class CompanyScreen extends CssLayout {
             table.addComponent(row);
             employees.add(row);
         }
+        table.setVisible(company.getEmployees().size() > 0);
     }
 
     public void addEmployee(Employee employee) {
@@ -150,12 +155,12 @@ public class CompanyScreen extends CssLayout {
     public void updateStats() {
         company = root.getCompanyService().findCompany(company.getToken());
         CompanyStats stats = null;
-        if (company.getTotalMarkers() > 0) {
-            stats = new CompanyStats(company);
-        } else {
-            stats = new CompanyStats();
-        }
+        stats = new CompanyStats(company);
         layout.replaceComponent(this.stats, stats);
         this.stats = stats;
+    }
+
+    public Company getCompany() {
+        return company;
     }
 }

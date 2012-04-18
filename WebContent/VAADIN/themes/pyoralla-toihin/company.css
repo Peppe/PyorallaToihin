@@ -2,8 +2,13 @@
 	margin:0 auto;
 }
 
+.company-name {
+	text-align:right;
+	color: #60B30E;
+	font-size: 1.4em;
+	font-weight:bold;
+}
 .company-stats {
-	margin-top:10px;
 	margin-bottom:10px;
 }
 
@@ -44,35 +49,22 @@
 	margin-left:50px;
 }
 
-.add-user-button .v-button-wrap {
-	padding-top:20px
+.add-user-button .v-button-wrap,
+.add-user-button.v-disabled:active .v-button-wrap,
+.add-user-button.v-button:active .v-button-wrap,
+.v-ie8 .add-user-button.v-pressed.v-button .v-button-wrap,
+.add-user-button.v-button-down .v-button-wrap {
+	padding-top:30px
+}
+
+
+.add-user-button .v-button-caption {
+	padding-left:10px;
 }
 
 .add-user-button-margins {
 	display:inline-block;
 	vertical-align: middle;
-}
-
-.add-user input.v-paintable.v-textfield[type="text"] {
-	height: 24px;
-}
-
-body .add-user input.v-textfield,
-.add-user .v-filterselect .v-filterselect-input {
-	font-size: 1.3em;
-}
-
-.add-user .v-filterselect {
-	padding-top: .3em;
-	padding-bottom: .3em;
-}
-
-.add-user input.v-textfield[type=text] {
-	padding: .6em;
-}
-
-add-user .v-button {
-	font-size: 1.2em;
 }
 
 .employee-row .v-label,
@@ -99,7 +91,7 @@ add-user .v-button {
 
 .today-button .v-button-wrap .v-button-caption{
 	white-space: normal;
-	line-height:92px;	
+	line-height:124px;	
 }
 
 .yes, .no {
@@ -110,17 +102,23 @@ add-user .v-button {
 .no.v-button .v-button-caption {
 	height:24px;
 	width:24px;
-	display:inline-block;
+display:inline-block;
+
 }
 
 .yes.v-button .v-button-wrap,
 .no.v-button .v-button-wrap,
 .yes.v-button:active .v-button-wrap,
-.no.v-button:active .v-button-wrap{
+.no.v-button:active .v-button-wrap,
+.v-ie8 .yes.v-pressed.v-button .v-button-wrap,
+.v-ie8 .no.v-pressed.v-button .v-button-wrap,
+div.yes.v-button-down,
+div.no.v-button-down {
 	margin:0;
 	padding:0;
 	border:none;
 }
+
 
 .new-user-layout{
 	display: inline-block;

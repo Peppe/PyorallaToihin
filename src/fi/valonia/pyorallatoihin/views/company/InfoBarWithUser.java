@@ -12,9 +12,10 @@ import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 import fi.valonia.pyorallatoihin.data.Employee;
 
 public class InfoBarWithUser extends CssLayout {
+    private static final long serialVersionUID = 2778066204781540987L;
 
-    private CompanyScreen companyScreen;
-    private Button markTodayButton;
+    private final CompanyScreen companyScreen;
+    private final Button markTodayButton;
     private final PyorallaToihinRoot root;
 
     public InfoBarWithUser(PyorallaToihinRoot root,
@@ -22,19 +23,27 @@ public class InfoBarWithUser extends CssLayout {
         this.root = root;
         this.companyScreen = companyScreen;
         setWidth("1000px");
+        setHeight("130px");
 
         ClickListener markClickListener = new ClickListener() {
+            private static final long serialVersionUID = 3470519329527795486L;
+
+            @Override
             public void buttonClick(ClickEvent event) {
                 boolean todayMarked = InfoBarWithUser.this.companyScreen
                         .markTodayOnSelectedEmployee();
                 todaySelected(todayMarked);
             }
         };
+        CssLayout margins = new CssLayout();
+        margins.setHeight("100%");
+
+        margins.addStyleName("add-user-button-margins");
         markTodayButton = new Button(root.getMessages().getString(
                 Messages.press_here_to_mark_today), markClickListener);
         markTodayButton.addStyleName("today-button");
         markTodayButton.setWidth("400px");
-        markTodayButton.setHeight("110px");
+        markTodayButton.setHeight("130px");
         CssLayout info = new CssLayout();
         info.addStyleName("info-bar-right");
         Label nameLabel = new Label(root.getMessages().getString(Messages.hi)
@@ -46,7 +55,8 @@ public class InfoBarWithUser extends CssLayout {
         info.addComponent(nameLabel);
         info.addComponent(descriptionLabel);
         info.setWidth("550px");
-        addComponent(markTodayButton);
+        margins.addComponent(markTodayButton);
+        addComponent(margins);
         addComponent(info);
     }
 

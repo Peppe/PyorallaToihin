@@ -1,5 +1,7 @@
 package fi.valonia.pyorallatoihin.views.company;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,6 +22,7 @@ import fi.valonia.pyorallatoihin.data.Season;
 import fi.valonia.pyorallatoihin.interfaces.ISystemService;
 
 public class EmployeeRow extends CssLayout {
+    private static final long serialVersionUID = 408469953129640391L;
 
     private final PyorallaToihinRoot root;
     private final Company company;
@@ -28,6 +31,8 @@ public class EmployeeRow extends CssLayout {
     private final Button[] buttons = new Button[8];
 
     ClickListener clickListener = new ClickListener() {
+        private static final long serialVersionUID = -3633715053483874698L;
+
         @Override
         public void buttonClick(ClickEvent event) {
             int day = (Integer) event.getButton().getData();
@@ -45,6 +50,7 @@ public class EmployeeRow extends CssLayout {
         setStyleName("employee-row");
 
         addListener(new LayoutClickListener() {
+            private static final long serialVersionUID = -3589060577170678837L;
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
@@ -85,7 +91,7 @@ public class EmployeeRow extends CssLayout {
         kmTotal = new Label();
         kmTotal.setWidth("90px");
         kmTotal.setStyleName("km-label");
-        updateTotal();
+        updateTotal(false);
         addComponent(kmTotal);
     }
 
@@ -97,8 +103,9 @@ public class EmployeeRow extends CssLayout {
         int today = getTodayNumber();
         if (today >= 0 && today <= 7) {
             toggleDay(today);
+            return employee.getDays()[today];
         }
-        return employee.getDays()[today];
+        return false;
     }
 
     /**
@@ -133,7 +140,7 @@ public class EmployeeRow extends CssLayout {
         } else {
             buttons[day].setStyleName("no");
         }
-        updateTotal();
+        updateTotal(true);
         return employee.getDays()[day];
     }
 
@@ -158,7 +165,7 @@ public class EmployeeRow extends CssLayout {
         return day;
     }
 
-    public void updateTotal() {
+    public void updateTotal(boolean notify) {
         double total = 0;
         boolean[] days = employee.getDays();
         for (int i = 0; i < 8; i++) {
@@ -169,7 +176,11 @@ public class EmployeeRow extends CssLayout {
         if (total > 5) {
             total = 5;
         }
-        kmTotal.setValue(String.valueOf(total * employee.getDistance()));
-        companyScreen.updateStats();
+        kmTotal.setValue(String.valueOf(new BigDecimal(total)
+                .multiply(new BigDecimal(employee.getDistance()))
+                .setScale(1, RoundingMode.HALF_UP).toString()));
+        if (notify) {
+            companyScreen.updateStats();
+        }
     }
 }

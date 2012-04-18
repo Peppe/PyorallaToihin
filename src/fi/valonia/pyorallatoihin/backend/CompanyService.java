@@ -1,7 +1,7 @@
 package fi.valonia.pyorallatoihin.backend;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import fi.valonia.pyorallatoihin.data.Company;
-import fi.valonia.pyorallatoihin.data.Company.CompanySize;
+import fi.valonia.pyorallatoihin.data.CompanyInfo;
 import fi.valonia.pyorallatoihin.data.Employee;
 import fi.valonia.pyorallatoihin.data.Sport;
 import fi.valonia.pyorallatoihin.interfaces.CompanyNameInUseException;
@@ -19,22 +19,39 @@ import fi.valonia.pyorallatoihin.interfaces.ICompanyService;
 
 public class CompanyService implements ICompanyService {
 
+    // private final JdbcConnectionPool cp;
+
+    public CompanyService() {
+        // cp = JdbcConnectionPool.create("jdbc:h2:~/pyorallatoihin", "sa", "");
+    }
+
+    private Connection getConnection() throws SQLException {
+        return Database.getConnection();
+    }
+
+    @Override
     public Company findCompany(String token) {
         if (token == null || token.equals("")) {
             return null;
         }
         Connection conn = null;
         try {
-            Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
-            Statement stmt = conn.createStatement();
-            String SQL = "SELECT * FROM Company WHERE TOKEN='" + token + "'";
-            ResultSet set = stmt.executeQuery(SQL);
-            Company company = convertResultSetToCopmany(set);
+            // conn = cp.getConnection();
+            conn = getConnection();
+            String SQL = "SELECT * FROM Company WHERE TOKEN= ?";
+            PreparedStatement companyStatement = conn.prepareStatement(SQL);
+            companyStatement.setString(1, token);
+            ResultSet set = companyStatement.executeQuery();
+            Company company = null;
+            if (set != null && set.next()) {
+                company = convertResultSetToCopmany(set);
+            }
             if (company != null) {
-                SQL = "SELECT * FROM EMPLOYEE WHERE COMPANY_ID='"
-                        + company.getId() + "'";
-                set = stmt.executeQuery(SQL);
+                SQL = "SELECT * FROM EMPLOYEE WHERE COMPANY_ID=?";
+                PreparedStatement employeeStatement = conn
+                        .prepareStatement(SQL);
+                employeeStatement.setInt(1, company.getId());
+                set = employeeStatement.executeQuery();
                 List<Employee> employees = convertResultSetToEmployees(set);
                 company.setEmployees(employees);
             }
@@ -55,35 +72,13 @@ public class CompanyService implements ICompanyService {
 
     private Company convertResultSetToCopmany(ResultSet set)
             throws SQLException {
-        if (set != null && set.next()) {
+        if (set != null) {
             Company company = new Company();
             company.setId(set.getInt("ID"));
             company.setSeasonId(set.getInt("SEASON_ID"));
             company.setToken(set.getString("TOKEN"));
             company.setName(set.getString("NAME"));
-            CompanySize size;
-            switch (set.getInt("SIZE")) {
-            case 1: {
-                size = CompanySize.S1_4;
-                break;
-            }
-            case 2: {
-                size = CompanySize.S5_20;
-                break;
-            }
-            case 3: {
-                size = CompanySize.S21_100;
-                break;
-            }
-            case 4: {
-                size = CompanySize.S_OVER_100;
-                break;
-            }
-            default: {
-                size = CompanySize.S1_4;
-            }
-            }
-            company.setSize(size);
+            company.setSize(set.getInt("SIZE"));
             company.setStreetAddress(set.getString("STREET"));
             company.setZip(set.getString("ZIP"));
             company.setCity(set.getString("CITY"));
@@ -125,7 +120,7 @@ public class CompanyService implements ICompanyService {
                     sport = Sport.OTHER;
                 }
                 employee.setSport(sport);
-                employee.setDistance(set.getInt("DISTANCE"));
+                employee.setDistance(set.getDouble("DISTANCE"));
                 for (int i = 1; i <= 8; i++) {
                     employee.getDays()[i - 1] = set.getBoolean("DAY" + i);
                 }
@@ -136,49 +131,29 @@ public class CompanyService implements ICompanyService {
         return null;
     }
 
+    @Override
     public void createCompany(Company company) throws CompanyNameInUseException {
         Connection conn = null;
         try {
-            Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
-            Statement stmt = conn.createStatement();
+            // conn = cp.getConnection();
+            conn = getConnection();
+
             String token = generateString();
             company.setToken(token);
-            String name = company.getName();
-            String street = company.getStreetAddress();
-            String zip = company.getZip();
-            String city = company.getCity();
-            String cp_name = company.getContactName();
-            String cp_email = company.getContactEmail();
-            String cp_phone = company.getContactPhone();
-            int size = -1;
-            if (company.getSize() == CompanySize.S1_4) {
-                size = 1;
-            } else if (company.getSize() == CompanySize.S5_20) {
-                size = 2;
-            } else if (company.getSize() == CompanySize.S21_100) {
-                size = 3;
-            } else if (company.getSize() == CompanySize.S_OVER_100) {
-                size = 4;
-            }
-
-            String SQL = "INSERT INTO Company (SEASON_ID, TOKEN, NAME, SIZE, STREET, ZIP, CITY, CONTACT_NAME, CONTACT_EMAIL, CONTACT_PHONE) values (1, '"
-                    + token
-                    + "', '"
-                    + name
-                    + "', "
-                    + size
-                    + ", '"
-                    + street
-                    + "', '"
-                    + zip
-                    + "', '"
-                    + city
-                    + "', '"
-                    + cp_name
-                    + "', '"
-                    + cp_email + "', '" + cp_phone + "')";
-            stmt.execute(SQL);
+            String SQL = "INSERT INTO Company (SEASON_ID, TOKEN, NAME, SIZE, STREET, ZIP, CITY, CONTACT_NAME, CONTACT_EMAIL, CONTACT_PHONE, FIRST_TIME, HEARD_FROM) values (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(SQL);
+            stmt.setString(1, company.getToken());
+            stmt.setString(2, company.getName());
+            stmt.setInt(3, company.getSize());
+            stmt.setString(4, company.getStreetAddress());
+            stmt.setString(5, company.getZip());
+            stmt.setString(6, company.getCity());
+            stmt.setString(7, company.getContactName());
+            stmt.setString(8, company.getContactEmail());
+            stmt.setString(9, company.getContactPhone());
+            stmt.setBoolean(10, company.isFirstTime());
+            stmt.setString(11, company.getHeardFrom());
+            stmt.execute();
             SQL = "SELECT * FROM COMPANY WHERE TOKEN='" + token + "'";
             ResultSet set = stmt.executeQuery(SQL);
             set.next();
@@ -206,25 +181,18 @@ public class CompanyService implements ICompanyService {
         return new String(text);
     }
 
+    @Override
     public void addEmployee(Company company, Employee employee)
             throws EmployeeExistsInCompanyException {
         // TODO Auto-generated method stub
         Connection conn = null;
         try {
-            Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+            // conn = cp.getConnection();
+            conn = getConnection();
             Statement stmt = conn.createStatement();
             String name = employee.getName();
             int company_id = company.getId();
             double distance = employee.getDistance();
-            boolean day1 = employee.getDays()[0];
-            boolean day2 = employee.getDays()[1];
-            boolean day3 = employee.getDays()[2];
-            boolean day4 = employee.getDays()[3];
-            boolean day5 = employee.getDays()[4];
-            boolean day6 = employee.getDays()[5];
-            boolean day7 = employee.getDays()[6];
-            boolean day8 = employee.getDays()[7];
             String sport = "BICYCLE";
             if (employee.getSport() == Sport.BICYCLE) {
                 sport = "BICYCLE";
@@ -253,11 +221,7 @@ public class CompanyService implements ICompanyService {
                     + "', "
                     + distance + ");";
             stmt.execute(SQL);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (conn != null) {
@@ -270,16 +234,13 @@ public class CompanyService implements ICompanyService {
         }
     }
 
+    @Override
     public void updateEmployee(Company company, Employee employee) {
-        // TODO Auto-generated method stub
         Connection conn = null;
         try {
-            Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+            // conn = cp.getConnection();
+            conn = getConnection();
             Statement stmt = conn.createStatement();
-            String name = employee.getName();
-            int company_id = company.getId();
-            double distance = employee.getDistance();
             boolean day1 = employee.getDays()[0];
             boolean day2 = employee.getDays()[1];
             boolean day3 = employee.getDays()[2];
@@ -288,24 +249,6 @@ public class CompanyService implements ICompanyService {
             boolean day6 = employee.getDays()[5];
             boolean day7 = employee.getDays()[6];
             boolean day8 = employee.getDays()[7];
-            String sport = "BICYCLE";
-            if (employee.getSport() == Sport.BICYCLE) {
-                sport = "BICYCLE";
-            } else if (employee.getSport() == Sport.WALKING) {
-                sport = "WALKING";
-            } else if (employee.getSport() == Sport.KICK_SCOOTER) {
-                sport = "KICK_SCOOTER";
-            } else if (employee.getSport() == Sport.ROLLER_BLADES) {
-                sport = "ROLLER_BLADES";
-            } else if (employee.getSport() == Sport.ROWING) {
-                sport = "ROWING";
-            } else if (employee.getSport() == Sport.WITH_HORSE) {
-                sport = "WITH_HORSE";
-            } else if (employee.getSport() == Sport.WITH_DOG_SLED) {
-                sport = "WITH_DOG_SLED";
-            } else if (employee.getSport() == Sport.OTHER) {
-                sport = "OTHER";
-            }
 
             String SQL = "UPDATE Employee SET day1=" + day1 + ", day2=" + day2
                     + ", day3=" + day3 + ", day4=" + day4 + ", day5=" + day5
@@ -313,11 +256,7 @@ public class CompanyService implements ICompanyService {
                     + " where ID=" + employee.getId() + ";";
             System.out.println("query: " + SQL);
             stmt.execute(SQL);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (conn != null) {
@@ -331,4 +270,88 @@ public class CompanyService implements ICompanyService {
 
     }
 
+    @Override
+    public List<CompanyInfo> getAllCompanyInfos() {
+        Connection conn = null;
+        try {
+            // conn = cp.getConnection();
+            conn = getConnection();
+            Statement stmt = conn.createStatement();
+            String SQL = "SELECT company.id, company.name, company.size, count(*) AS REGISTERED,"
+                    + "count(nullif(employee.day1, 0)) + "
+                    + "count(nullif(employee.day2, 0)) + "
+                    + "count(nullif(employee.day3, 0)) + "
+                    + "count(nullif(employee.day4, 0)) + "
+                    + "count(nullif(employee.day5, 0)) + "
+                    + "count(nullif(employee.day6, 0)) + "
+                    + "count(nullif(employee.day7, 0)) + "
+                    + "count(nullif(employee.day8, 0)) AS TOTALMARKERS "
+                    + "FROM company "
+                    + "LEFT JOIN employee "
+                    + "ON company.id=employee.company_id "
+                    + "group by company.id "
+                    + "order by totalmarkers desc "
+                    + "limit 5;";
+            System.out.println("query: " + SQL);
+            ResultSet set = stmt.executeQuery(SQL);
+            List<CompanyInfo> companies = new ArrayList<CompanyInfo>();
+            while (set.next()) {
+                CompanyInfo company = new CompanyInfo();
+                company.setId(set.getInt("ID"));
+                company.setName(set.getString("NAME"));
+                company.setSize(set.getInt("SIZE"));
+                company.setRegistered(set.getInt("REGISTERED"));
+                company.setTotalMarkers(set.getInt("TOTALMARKERS"));
+                companies.add(company);
+            }
+            return companies;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Company> getAllCompanies() {
+        Connection conn = null;
+        try {
+            // conn = cp.getConnection();
+            conn = getConnection();
+            Statement stmt = conn.createStatement();
+            String SQL = "SELECT * FROM Company";
+            ResultSet set = stmt.executeQuery(SQL);
+            List<Company> companies = new ArrayList<Company>();
+            while (set.next()) {
+                Company company = convertResultSetToCopmany(set);
+                if (company != null) {
+                    SQL = "SELECT * FROM EMPLOYEE WHERE COMPANY_ID='"
+                            + company.getId() + "'";
+                    set = stmt.executeQuery(SQL);
+                    List<Employee> employees = convertResultSetToEmployees(set);
+                    company.setEmployees(employees);
+                }
+                companies.add(company);
+            }
+            return companies;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */
+                }
+            }
+        }
+        return null;
+    }
 }

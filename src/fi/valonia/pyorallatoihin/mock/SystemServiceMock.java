@@ -9,8 +9,8 @@ import fi.valonia.pyorallatoihin.data.Season;
 import fi.valonia.pyorallatoihin.interfaces.ISystemService;
 
 public class SystemServiceMock implements ISystemService, Serializable {
-
-    private List<Season> seasons = new ArrayList<Season>();
+    private static final long serialVersionUID = -2774589976242571798L;
+    private final List<Season> seasons = new ArrayList<Season>();
     private Season currentSeason;
 
     public SystemServiceMock() {
@@ -33,20 +33,23 @@ public class SystemServiceMock implements ISystemService, Serializable {
         season = new Season();
         season.setId(3);
         season.setName("2011 vaihto");
-        calendar.set(2012, 2, 19);
+        calendar.set(2012, 3, 2);
         season.setStartDate(calendar.getTime());
         seasons.add(season);
         currentSeason = season;
     }
 
+    @Override
     public List<Season> getSeasons() {
         return seasons;
     }
 
+    @Override
     public Season getCurrentSeason() {
         return currentSeason;
     }
 
+    @Override
     public void setCurrentSeason(Season season) {
         currentSeason = season;
 

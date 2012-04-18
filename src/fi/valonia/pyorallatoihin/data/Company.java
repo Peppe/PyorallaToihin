@@ -5,16 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Company implements Serializable {
-
-    public enum CompanySize {
-        S1_4, S5_20, S21_100, S_OVER_100;
-    }
-
+    private static final long serialVersionUID = -8303292229895712730L;
     private int id;
     private int seasonId;
     private String token;
     private String name = "";
-    private CompanySize size = CompanySize.S1_4;
+    private int size = 0;
     private String streetAddress = "";
     private String zip = "";
     private String city = "";
@@ -22,6 +18,9 @@ public class Company implements Serializable {
     private String contactName = "";
     private String contactEmail = "";
     private String contactPhone = "";
+
+    private boolean firstTime = false;
+    private String heardFrom = "";
 
     private List<Employee> employees = new ArrayList<Employee>();
 
@@ -57,11 +56,11 @@ public class Company implements Serializable {
         this.name = name;
     }
 
-    public CompanySize getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(CompanySize size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
@@ -119,6 +118,22 @@ public class Company implements Serializable {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public boolean isFirstTime() {
+        return firstTime;
+    }
+
+    public void setFirstTime(boolean firstTime) {
+        this.firstTime = firstTime;
+    }
+
+    public String getHeardFrom() {
+        return heardFrom;
+    }
+
+    public void setHeardFrom(String heardFrom) {
+        this.heardFrom = heardFrom;
     }
 
     public int getTotalMarkers() {

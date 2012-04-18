@@ -14,6 +14,7 @@ import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 
 public class HeaderRow extends CssLayout {
+    private static final long serialVersionUID = -585710224663561070L;
 
     public HeaderRow(PyorallaToihinRoot root, Date startDate, Locale locale) {
         setStyleName("header-row");

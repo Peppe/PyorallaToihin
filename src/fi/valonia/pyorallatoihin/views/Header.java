@@ -12,13 +12,15 @@ import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 
 public class Header extends CssLayout {
-
-    private Button fin;
-    private Button swe;
-    private Button en;
+    private static final long serialVersionUID = -3762111526374739947L;
+    private final Button fin;
+    private final Button swe;
+    private final Button en;
 
     ClickListener clickListener = new ClickListener() {
+        private static final long serialVersionUID = 1272415599058064909L;
 
+        @Override
         public void buttonClick(ClickEvent event) {
             String language = null;
             if (event.getButton() == swe) {
@@ -32,7 +34,6 @@ public class Header extends CssLayout {
 
     public Header(PyorallaToihinRoot root) {
         addStyleName("header");
-        // TODO switch to real logo
         Embedded valonia = new Embedded(null, new ThemeResource(
                 "img/valonia_logo.png"));
         valonia.addStyleName("valonia-logo");

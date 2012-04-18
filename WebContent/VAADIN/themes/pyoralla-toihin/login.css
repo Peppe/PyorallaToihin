@@ -1,4 +1,4 @@
-input.v-paintable.v-textfield[type="text"].login-token {
+/*input.v-paintable.v-textfield[type="text"].login-token {
 	height: 30px;
 }
 
@@ -9,14 +9,14 @@ body input.v-textfield-login-token {
 input.v-textfield-login-token[type=text] {
 	padding: .6em;
 }
-
+*/
 .v-button-login-submit {
 	font-size: 1.2em;
 }
 
 .competition-stats {
-	padding-top:10px;
-	padding-bottom:10px;
+	margin-top:10px;
+	margin-bottom:10px;
 }
 
 .competition-stats .v-csslayout-margin{
@@ -24,8 +24,15 @@ input.v-textfield-login-token[type=text] {
 	border: 2px solid rgb(118,127,108);
 	
 }
-
-.competition-stats .v-csslayout-container{
+.competition-stats .v-label {
+	padding-left: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	white-space: nowrap;
+	
+}
+.competition-stats-line-height .v-csslayout-container{
 	line-height:126px;
 }
 

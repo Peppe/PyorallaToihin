@@ -13,30 +13,41 @@ import fi.valonia.pyorallatoihin.interfaces.ISystemService;
 import fi.valonia.pyorallatoihin.mock.SystemServiceMock;
 import fi.valonia.pyorallatoihin.views.company.CompanyScreen;
 import fi.valonia.pyorallatoihin.views.login.LoginScreen;
+import fi.valonia.pyorallatoihin.views.manage.ManageScreen;
 
 @Theme("pyoralla-toihin")
 public class PyorallaToihinRoot extends Root {
+    private static final long serialVersionUID = 3729361059096674789L;
 
     String token = null;
     int userId = -1;
     String language = null;
 
-    ICompanyService companyService = new CompanyService();
+    private ICompanyService companyService;
     ISystemService systemService = new SystemServiceMock();
     Messages messages;
 
     @Override
     protected void init(WrappedRequest request) {
-        String fragment = request.getBrowserDetails().getUriFragment();
-        parseFragment(fragment);
-        addListener(new FragmentChangedListener() {
+        companyService = new CompanyService();
 
-            public void fragmentChanged(FragmentChangedEvent event) {
-                parseFragment(event.getFragment());
-                openFragmentView();
-            }
-        });
-        openFragmentView();
+        String pathInfo = request.getRequestPathInfo();
+        if ("/admin".equals(pathInfo)) {
+            showManageScreen();
+        } else {
+            String fragment = request.getBrowserDetails().getUriFragment();
+            parseFragment(fragment);
+            addListener(new FragmentChangedListener() {
+                private static final long serialVersionUID = 4777129567052741581L;
+
+                @Override
+                public void fragmentChanged(FragmentChangedEvent event) {
+                    parseFragment(event.getFragment());
+                    openFragmentView();
+                }
+            });
+            openFragmentView();
+        }
     }
 
     private void openFragmentView() {
@@ -52,6 +63,11 @@ public class PyorallaToihinRoot extends Root {
         } else {
             setContent(new LoginScreen(this));
         }
+    }
+
+    public void showManageScreen() {
+        ManageScreen screen = new ManageScreen();
+        setContent(screen);
     }
 
     public void showCompany(Company company) {
@@ -106,7 +122,7 @@ public class PyorallaToihinRoot extends Root {
             String languageMatcher = "FI|fi|SE|se|EN|en";
             for (String fragment : fragments) {
                 if (fragment.matches(tokenMatcher)) {
-                    token = fragment;
+                    token = fragment.toUpperCase();
                 }
                 if (fragment.matches(userIdMatcher)) {
                     try {
@@ -133,19 +149,16 @@ public class PyorallaToihinRoot extends Root {
     private void setFragment(boolean fireEvent) {
         StringBuilder fragment = new StringBuilder();
         if (token != null) {
+            fragment.append('/');
             fragment.append(token);
         }
         if (userId != -1) {
-            if (fragment.length() != 0) {
-                fragment.append('/');
-            }
+            fragment.append('/');
             fragment.append(userId);
         }
         if (language != null
                 && (language.equals("SE") || language.equals("EN"))) {
-            if (fragment.length() != 0) {
-                fragment.append('/');
-            }
+            fragment.append('/');
             fragment.append(language);
         }
         setFragment(fragment.toString(), fireEvent);
@@ -161,5 +174,9 @@ public class PyorallaToihinRoot extends Root {
 
     public Messages getMessages() {
         return messages;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
