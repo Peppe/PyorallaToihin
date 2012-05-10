@@ -37,7 +37,7 @@ public class Database implements ServletContextListener {
             // Start the server if configured to do so
             server = Server.createTcpServer("-tcpAllowOthers");
             server.start();
-            Connection conn = DriverManager.getConnection(url, user, password);
+            DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -47,14 +47,18 @@ public class Database implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         try {
-            Statement stat = conn.createStatement();
-            stat.execute("SHUTDOWN");
-            stat.close();
+            if (conn != null) {
+                Statement stat = conn.createStatement();
+                stat.execute("SHUTDOWN");
+                stat.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            conn.close();
+            if (conn != null) {
+                conn.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

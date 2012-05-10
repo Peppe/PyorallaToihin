@@ -1,88 +1,59 @@
 package fi.valonia.pyorallatoihin.views.manage;
 
-import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Root;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
-import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
-import fi.valonia.pyorallatoihin.data.Company;
-import fi.valonia.pyorallatoihin.interfaces.ICompanyService;
-
-public class ManageScreen extends VerticalLayout {
+public class ManageScreen extends VerticalLayout implements ClickListener {
     private static final long serialVersionUID = 4101570212559349303L;
 
+    CompetitionStatisticsView stats = new CompetitionStatisticsView();
+    CompanyEditView companies = null;
+    CompetitionSettings settings = null;
+
+    Button statsButton = new Button("Tilastot", this);
+    Button companiesButton = new Button("Muokkaa yritysten tiedot", this);
+    Button settingsButton = new Button("Asetukset", this);
+
+    private final Panel panel;
+
     public ManageScreen() {
-        Table table = createManageTable();
-        addComponent(table);
         setSizeFull();
-        setExpandRatio(table, 1);
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.addComponent(statsButton);
+        buttons.addComponent(companiesButton);
+        buttons.addComponent(settingsButton);
+        panel = new Panel();
+        panel.setSizeFull();
+        panel.setContent(stats);
+        addComponent(buttons);
+        addComponent(panel);
         setMargin(true);
+        setSpacing(true);
+        setExpandRatio(panel, 1);
     }
 
-    private Table createManageTable() {
-        Table table = new Table();
-        table.setSelectable(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setSizeFull();
-        ICompanyService companyService = ((PyorallaToihinRoot) Root
-                .getCurrentRoot()).getCompanyService();
-        List<Company> companies = companyService.getAllCompanies();
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("Id", Integer.class, null);
-        container.addContainerProperty("Tunnus", String.class, null);
-        container.addContainerProperty("Nimi", String.class, null);
-        container.addContainerProperty("Kausi", Integer.class, null);
-        container.addContainerProperty("Ilmoitettu koko", Integer.class, null);
-        container.addContainerProperty("Osallistujia", Integer.class, null);
-        container.addContainerProperty("Ensimmäinen kerta", String.class, null);
-        container.addContainerProperty("Kuullut", String.class, null);
-        container.addContainerProperty("Katuosoite", String.class, null);
-        container.addContainerProperty("Postinumero", String.class, null);
-        container.addContainerProperty("Kaupunki", String.class, null);
-        container.addContainerProperty("Yhteyshenkilön nimi", String.class,
-                null);
-        container.addContainerProperty("Yhteyshenkilön sähköposti",
-                String.class, null);
-        container.addContainerProperty("Yhteyshenkilön puhelinnumero",
-                String.class, null);
-        container.addContainerProperty("Yhteenlaskettu km", Double.class, null);
-        container.addContainerProperty("Merkintöjä", Integer.class, null);
-
-        for (Company company : companies) {
-            Item item = container.addItem(company);
-            item.getItemProperty("Id").setValue(company.getId());
-            item.getItemProperty("Tunnus").setValue(company.getToken());
-            item.getItemProperty("Nimi").setValue(company.getName());
-            item.getItemProperty("Kausi").setValue(company.getSeasonId());
-            item.getItemProperty("Ilmoitettu koko").setValue(company.getSize());
-            item.getItemProperty("Osallistujia").setValue(
-                    company.getEmployees().size());
-            if (company.isFirstTime()) {
-                item.getItemProperty("Ensimmäinen kerta").setValue("Kyllä");
-            } else {
-                item.getItemProperty("Ensimmäinen kerta").setValue("Ei");
+    @Override
+    public void buttonClick(ClickEvent event) {
+        if (event.getButton() == statsButton) {
+            if (stats == null) {
+                stats = new CompetitionStatisticsView();
             }
-            item.getItemProperty("Kuullut").setValue(company.getHeardFrom());
-            item.getItemProperty("Katuosoite").setValue(
-                    company.getStreetAddress());
-            item.getItemProperty("Postinumero").setValue(company.getZip());
-            item.getItemProperty("Kaupunki").setValue(company.getCity());
-            item.getItemProperty("Yhteyshenkilön nimi").setValue(
-                    company.getContactName());
-            item.getItemProperty("Yhteyshenkilön sähköposti").setValue(
-                    company.getContactEmail());
-            item.getItemProperty("Yhteyshenkilön puhelinnumero").setValue(
-                    company.getContactPhone());
-            item.getItemProperty("Yhteenlaskettu km").setValue(
-                    company.getTotalKm());
-            item.getItemProperty("Merkintöjä").setValue(
-                    company.getTotalMarkers());
+            panel.setContent(stats);
+        } else if (event.getButton() == companiesButton) {
+            if (companies == null) {
+                companies = new CompanyEditView();
+            }
+            panel.setContent(companies);
+        } else if (event.getButton() == settingsButton) {
+            if (settings == null) {
+                settings = new CompetitionSettings();
+            }
+            panel.setContent(settings);
         }
-        table.setContainerDataSource(container);
-        return table;
+        panel.requestRepaint();
     }
 }

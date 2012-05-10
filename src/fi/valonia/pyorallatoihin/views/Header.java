@@ -5,8 +5,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.ChameleonTheme;
 
 import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
@@ -32,11 +32,20 @@ public class Header extends CssLayout {
         }
     };
 
-    public Header(PyorallaToihinRoot root) {
+    public Header(final PyorallaToihinRoot root) {
         addStyleName("header");
-        Embedded valonia = new Embedded(null, new ThemeResource(
-                "img/valonia_logo.png"));
+        Button valonia = new Button(null);
+        valonia.setIcon(new ThemeResource("img/valonia_logo.png"));
         valonia.addStyleName("valonia-logo");
+        valonia.addStyleName(ChameleonTheme.BUTTON_BORDERLESS);
+        valonia.addListener(new ClickListener() {
+            private static final long serialVersionUID = 4904853297678384550L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                root.setFragment("", true);
+            }
+        });
         Label changeLanguage = new Label(root.getMessages().getString(
                 Messages.choose_language));
         changeLanguage.setWidth(null);

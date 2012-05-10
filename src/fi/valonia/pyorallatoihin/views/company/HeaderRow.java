@@ -20,6 +20,7 @@ public class HeaderRow extends CssLayout {
         setStyleName("header-row");
         Label name = new Label(root.getMessages().getString(Messages.name));
         name.setSizeUndefined();
+        name.addStyleName("name");
         Label sport = new Label(root.getMessages().getString(Messages.type));
         Label km = new Label(root.getMessages().getString(Messages.km));
         SimpleDateFormat weekDay = new SimpleDateFormat("EE", locale);

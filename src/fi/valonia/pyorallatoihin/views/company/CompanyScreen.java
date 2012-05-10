@@ -9,10 +9,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Root;
 
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
+import fi.valonia.pyorallatoihin.components.Spacer;
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.data.Employee;
 import fi.valonia.pyorallatoihin.data.Season;
 import fi.valonia.pyorallatoihin.interfaces.EmployeeExistsInCompanyException;
+import fi.valonia.pyorallatoihin.views.Feedback;
 import fi.valonia.pyorallatoihin.views.Header;
 
 public class CompanyScreen extends CssLayout {
@@ -30,15 +32,21 @@ public class CompanyScreen extends CssLayout {
     public CompanyScreen(PyorallaToihinRoot root, Company company) {
         this.root = root;
         this.company = company;
-
+        addStyleName("main");
         setMargin(true);
         Header header = new Header(root);
         CssLayout layout = createLayout();
         addComponent(header);
         addComponent(layout);
+        // Spacer to leave room for feedback
+        Spacer spacer = new Spacer("100%", "100px");
+        Feedback feedback = new Feedback();
+        addComponent(spacer);
+        addComponent(feedback);
         // setComponentAlignment(header, Alignment.TOP_CENTER);
         // setComponentAlignment(layout, Alignment.TOP_CENTER);
         populateEmployeeTable();
+
     }
 
     public CompanyScreen(PyorallaToihinRoot root, Company company,
@@ -49,7 +57,7 @@ public class CompanyScreen extends CssLayout {
 
     private CssLayout createLayout() {
         layout = new CssLayout();
-        layout.setWidth("1000px");
+        layout.setWidth("1120px");
         layout.addStyleName("company-layout");
         Label companyName = new Label(company.getName() + " - "
                 + Root.getCurrentRoot().getApplication().getURL() + "#/"
@@ -63,7 +71,7 @@ public class CompanyScreen extends CssLayout {
 
         table = new CssLayout();
         table.setStyleName("employee-table");
-        table.setWidth("1000px");
+        table.setWidth("1120px");
 
         layout.addComponent(companyName);
         layout.addComponent(stats);
@@ -80,7 +88,7 @@ public class CompanyScreen extends CssLayout {
         table.addComponent(new HeaderRow(root, currentSeason.getStartDate(),
                 root.getLocale()));
         for (Employee employee : company.getEmployees()) {
-            EmployeeRow row = new EmployeeRow(root, company, employee, this);
+            EmployeeRow row = new EmployeeRow(employee, this);
             table.addComponent(row);
             employees.add(row);
         }
@@ -96,6 +104,21 @@ public class CompanyScreen extends CssLayout {
         } catch (EmployeeExistsInCompanyException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateEmployeeDetails(Employee employee) {
+        root.getCompanyService().updateEmployeeDetails(employee);
+        company = root.getCompanyService().findCompany(company.getToken());
+        updateStats();
+        populateEmployeeTable();
+        selectEmployee(employee);
+    }
+
+    public void updateEmployeeDays(Employee employee) {
+        root.getCompanyService().updateEmployeeDays(employee);
+        company = root.getCompanyService().findCompany(company.getToken());
+        populateEmployeeTable();
+        selectEmployee(employee);
     }
 
     public void selectEmployee(Employee employee) {
@@ -118,10 +141,10 @@ public class CompanyScreen extends CssLayout {
 
     public void selectEmployeeRow(EmployeeRow row) {
         if (selected != null) {
-            selected.removeStyleName("selected");
+            selected.unselect();
         }
         if (row != null && row != selected) {
-            row.addStyleName("selected");
+            row.select();
             InfoBarWithUser infoBarWithUser = new InfoBarWithUser(root, this,
                     row.getEmployee());
             infoBarWithUser.todaySelected(row.isTodayMarked());
@@ -162,5 +185,11 @@ public class CompanyScreen extends CssLayout {
 
     public Company getCompany() {
         return company;
+    }
+
+    public void employeeDeleted(EmployeeRow employeeRow) {
+        table.removeComponent(employeeRow);
+        selectEmployeeRow(null);
+        updateStats();
     }
 }

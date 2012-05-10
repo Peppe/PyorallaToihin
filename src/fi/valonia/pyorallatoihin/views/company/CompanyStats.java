@@ -13,18 +13,23 @@ import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 import fi.valonia.pyorallatoihin.data.Company;
 
-public class CompanyStats extends CssLayout {
+public class CompanyStats extends VerticalLayout {
     private static final long serialVersionUID = 8524524551101097444L;
 
     private final Company company;
 
+    private final CssLayout actualLayout;
+
     public CompanyStats(Company company) {
         this.company = company;
-        addStyleName("company-stats");
-
-        setWidth("1000px");
+        setWidth("1120px");
         setHeight("150px");
-
+        actualLayout = new CssLayout();
+        actualLayout.addStyleName("company-stats");
+        actualLayout.setWidth("1000px");
+        actualLayout.setHeight("150px");
+        addComponent(actualLayout);
+        setComponentAlignment(actualLayout, Alignment.MIDDLE_CENTER);
         if (company.getTotalMarkers() != 0) {
             fillInCompanyStats();
         } else {
@@ -59,8 +64,6 @@ public class CompanyStats extends CssLayout {
         double avgKm = ((double) totalMarkers) / ((double) company.getSize());
         double roundedAvgKm = Math.round(avgKm * 100) / 100d;
         Label avgMarkers = new Label(String.valueOf(roundedAvgKm));
-        Label label = new Label("[STATS]");
-        label.addStyleName("company-stats-label");
 
         layout.addComponent(employeesLabel, 0, 0);
         layout.addComponent(participantsLabel, 0, 1);
@@ -102,7 +105,7 @@ public class CompanyStats extends CssLayout {
         layout.addComponent(contactName, 4, 1);
         layout.addComponent(contactEmail, 4, 2);
         layout.addComponent(contactPhone, 4, 3);
-        addComponent(layout);
+        actualLayout.addComponent(layout);
     }
 
     private void showInstructions() {
@@ -142,6 +145,6 @@ public class CompanyStats extends CssLayout {
         wrapper.setSizeFull();
         wrapper.addComponent(layout);
         wrapper.setComponentAlignment(layout, Alignment.MIDDLE_CENTER);
-        addComponent(wrapper);
+        actualLayout.addComponent(wrapper);
     }
 }

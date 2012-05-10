@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.vaadin.ui.Root;
+
+import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.data.CompanyInfo;
 import fi.valonia.pyorallatoihin.data.Employee;
@@ -21,12 +24,19 @@ public class CompanyService implements ICompanyService {
 
     // private final JdbcConnectionPool cp;
 
+    private static final long serialVersionUID = 9186438590017092618L;
+
     public CompanyService() {
         // cp = JdbcConnectionPool.create("jdbc:h2:~/pyorallatoihin", "sa", "");
     }
 
     private Connection getConnection() throws SQLException {
         return Database.getConnection();
+    }
+
+    private int getSeasonId() {
+        return ((PyorallaToihinRoot) Root.getCurrentRoot()).getSystemService()
+                .getCurrentSeason().getId();
     }
 
     @Override
@@ -38,9 +48,10 @@ public class CompanyService implements ICompanyService {
         try {
             // conn = cp.getConnection();
             conn = getConnection();
-            String SQL = "SELECT * FROM Company WHERE TOKEN= ?";
+            String SQL = "SELECT * FROM Company WHERE TOKEN=? AND SEASON_ID=?";
             PreparedStatement companyStatement = conn.prepareStatement(SQL);
             companyStatement.setString(1, token);
+            companyStatement.setInt(2, getSeasonId());
             ResultSet set = companyStatement.executeQuery();
             Company company = null;
             if (set != null && set.next()) {
@@ -99,26 +110,7 @@ public class CompanyService implements ICompanyService {
                 Employee employee = new Employee();
                 employee.setId(set.getInt("ID"));
                 employee.setName(set.getString("NAME"));
-
-                Sport sport = Sport.BICYCLE;
-                String sportString = set.getString("SPORT");
-                if ("BICYCLE".equals(sportString)) {
-                    sport = Sport.BICYCLE;
-                } else if ("WALKING".equals(sportString)) {
-                    sport = Sport.WALKING;
-                } else if ("KICK_SCOOTER".equals(sportString)) {
-                    sport = Sport.KICK_SCOOTER;
-                } else if ("ROLLER_BLADES".equals(sportString)) {
-                    sport = Sport.ROLLER_BLADES;
-                } else if ("ROWING".equals(sportString)) {
-                    sport = Sport.ROWING;
-                } else if ("WITH_HORSE".equals(sportString)) {
-                    sport = Sport.WITH_HORSE;
-                } else if ("WITH_DOG_SLED".equals(sportString)) {
-                    sport = Sport.WITH_DOG_SLED;
-                } else if ("OTHER".equals(sportString)) {
-                    sport = Sport.OTHER;
-                }
+                Sport sport = Sport.stringToSport(set.getString("SPORT"));
                 employee.setSport(sport);
                 employee.setDistance(set.getDouble("DISTANCE"));
                 for (int i = 1; i <= 8; i++) {
@@ -136,26 +128,30 @@ public class CompanyService implements ICompanyService {
         Connection conn = null;
         try {
             // conn = cp.getConnection();
+            int seasonId = getSeasonId();
             conn = getConnection();
-
             String token = generateString();
             company.setToken(token);
-            String SQL = "INSERT INTO Company (SEASON_ID, TOKEN, NAME, SIZE, STREET, ZIP, CITY, CONTACT_NAME, CONTACT_EMAIL, CONTACT_PHONE, FIRST_TIME, HEARD_FROM) values (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String SQL = "INSERT INTO Company (SEASON_ID, TOKEN, NAME, SIZE, STREET, ZIP, CITY, CONTACT_NAME, CONTACT_EMAIL, CONTACT_PHONE, FIRST_TIME, HEARD_FROM) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(SQL);
-            stmt.setString(1, company.getToken());
-            stmt.setString(2, company.getName());
-            stmt.setInt(3, company.getSize());
-            stmt.setString(4, company.getStreetAddress());
-            stmt.setString(5, company.getZip());
-            stmt.setString(6, company.getCity());
-            stmt.setString(7, company.getContactName());
-            stmt.setString(8, company.getContactEmail());
-            stmt.setString(9, company.getContactPhone());
-            stmt.setBoolean(10, company.isFirstTime());
-            stmt.setString(11, company.getHeardFrom());
+            stmt.setInt(1, seasonId);
+            stmt.setString(2, company.getToken());
+            stmt.setString(3, company.getName());
+            stmt.setInt(4, company.getSize());
+            stmt.setString(5, company.getStreetAddress());
+            stmt.setString(6, company.getZip());
+            stmt.setString(7, company.getCity());
+            stmt.setString(8, company.getContactName());
+            stmt.setString(9, company.getContactEmail());
+            stmt.setString(10, company.getContactPhone());
+            stmt.setBoolean(11, company.isFirstTime());
+            stmt.setString(12, company.getHeardFrom());
             stmt.execute();
-            SQL = "SELECT * FROM COMPANY WHERE TOKEN='" + token + "'";
-            ResultSet set = stmt.executeQuery(SQL);
+            SQL = "SELECT * FROM COMPANY WHERE TOKEN=? AND SEASON_ID=?";
+            stmt = conn.prepareStatement(SQL);
+            stmt.setString(1, token);
+            stmt.setInt(2, seasonId);
+            ResultSet set = stmt.executeQuery();
             set.next();
             company.setId(set.getInt("ID"));
         } catch (Exception e) {
@@ -189,38 +185,13 @@ public class CompanyService implements ICompanyService {
         try {
             // conn = cp.getConnection();
             conn = getConnection();
-            Statement stmt = conn.createStatement();
-            String name = employee.getName();
-            int company_id = company.getId();
-            double distance = employee.getDistance();
-            String sport = "BICYCLE";
-            if (employee.getSport() == Sport.BICYCLE) {
-                sport = "BICYCLE";
-            } else if (employee.getSport() == Sport.WALKING) {
-                sport = "WALKING";
-            } else if (employee.getSport() == Sport.KICK_SCOOTER) {
-                sport = "KICK_SCOOTER";
-            } else if (employee.getSport() == Sport.ROLLER_BLADES) {
-                sport = "ROLLER_BLADES";
-            } else if (employee.getSport() == Sport.ROWING) {
-                sport = "ROWING";
-            } else if (employee.getSport() == Sport.WITH_HORSE) {
-                sport = "WITH_HORSE";
-            } else if (employee.getSport() == Sport.WITH_DOG_SLED) {
-                sport = "WITH_DOG_SLED";
-            } else if (employee.getSport() == Sport.OTHER) {
-                sport = "OTHER";
-            }
-
-            String SQL = "INSERT INTO Employee  (NAME , COMPANY_ID, SPORT, DISTANCE) values ('"
-                    + name
-                    + "', "
-                    + company_id
-                    + ", '"
-                    + sport
-                    + "', "
-                    + distance + ");";
-            stmt.execute(SQL);
+            String SQL = "INSERT INTO Employee  (NAME , COMPANY_ID, SPORT, DISTANCE) values (?, ?, ?, ?);";
+            PreparedStatement stmt = conn.prepareStatement(SQL);
+            stmt.setString(1, employee.getName());
+            stmt.setInt(2, company.getId());
+            stmt.setString(3, employee.getSport().getStringRepresentation());
+            stmt.setDouble(4, employee.getDistance());
+            stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -235,7 +206,33 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public void updateEmployee(Company company, Employee employee) {
+    public void updateEmployeeDetails(Employee employee) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            String SQL = "UPDATE Employee SET NAME=?, SPORT=?, DISTANCE=? WHERE ID=?";
+            PreparedStatement companyStatement = conn.prepareStatement(SQL);
+            companyStatement.setString(1, employee.getName());
+            companyStatement.setString(2, employee.getSport()
+                    .getStringRepresentation());
+            companyStatement.setDouble(3, employee.getDistance());
+            companyStatement.setInt(4, employee.getId());
+            companyStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateEmployeeDays(Employee employee) {
         Connection conn = null;
         try {
             // conn = cp.getConnection();
@@ -267,13 +264,35 @@ public class CompanyService implements ICompanyService {
                 }
             }
         }
+    }
 
+    @Override
+    public void deleteEmployee(Employee employee) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            String SQL = "DELETE FROM Employee WHERE ID=?";
+            PreparedStatement companyStatement = conn.prepareStatement(SQL);
+            companyStatement.setInt(1, employee.getId());
+            companyStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */
+                }
+            }
+        }
     }
 
     @Override
     public List<CompanyInfo> getAllCompanyInfos() {
         Connection conn = null;
         try {
+            int seasonId = getSeasonId();
             // conn = cp.getConnection();
             conn = getConnection();
             Statement stmt = conn.createStatement();
@@ -289,6 +308,9 @@ public class CompanyService implements ICompanyService {
                     + "FROM company "
                     + "LEFT JOIN employee "
                     + "ON company.id=employee.company_id "
+                    + "WHERE SEASON_ID ="
+                    + seasonId
+                    + " "
                     + "group by company.id "
                     + "order by totalmarkers desc "
                     + "limit 5;";
@@ -321,21 +343,49 @@ public class CompanyService implements ICompanyService {
 
     @Override
     public List<Company> getAllCompanies() {
+        return getAllCompanies(-1, -1);
+    }
+
+    @Override
+    public List<Company> getAllCompanies(int minSize, int maxSize) {
         Connection conn = null;
         try {
             // conn = cp.getConnection();
+            int seasonId = getSeasonId();
             conn = getConnection();
-            Statement stmt = conn.createStatement();
-            String SQL = "SELECT * FROM Company";
-            ResultSet set = stmt.executeQuery(SQL);
+            PreparedStatement stmt = null;
+            if (minSize != -1 && maxSize != -1) {
+                String SQL = "SELECT * FROM Company WHERE SIZE >= ? AND SIZE <= ? AND SEASON_ID=?";
+                stmt = conn.prepareStatement(SQL);
+                stmt.setInt(1, minSize);
+                stmt.setInt(2, maxSize);
+                stmt.setInt(3, seasonId);
+            } else if (minSize != -1 && maxSize == -1) {
+                String SQL = "SELECT * FROM Company WHERE SIZE >= ? AND SEASON_ID=?";
+                stmt = conn.prepareStatement(SQL);
+                stmt.setInt(1, minSize);
+                stmt.setInt(2, seasonId);
+            } else if (minSize == -1 && maxSize != -1) {
+                String SQL = "SELECT * FROM Company WHERE SIZE <= ? AND SEASON_ID=?";
+                stmt = conn.prepareStatement(SQL);
+                stmt.setInt(1, maxSize);
+                stmt.setInt(2, seasonId);
+            } else {
+                String SQL = "SELECT * FROM Company WHERE SEASON_ID=?";
+                stmt = conn.prepareStatement(SQL);
+                stmt.setInt(1, seasonId);
+            }
+            stmt.toString();
+            ResultSet set = stmt.executeQuery();
             List<Company> companies = new ArrayList<Company>();
             while (set.next()) {
                 Company company = convertResultSetToCopmany(set);
                 if (company != null) {
-                    SQL = "SELECT * FROM EMPLOYEE WHERE COMPANY_ID='"
-                            + company.getId() + "'";
-                    set = stmt.executeQuery(SQL);
-                    List<Employee> employees = convertResultSetToEmployees(set);
+                    String SQL = "SELECT * FROM EMPLOYEE WHERE COMPANY_ID=?";
+                    stmt = conn.prepareStatement(SQL);
+                    stmt.setInt(1, company.getId());
+                    ResultSet employeeSet = stmt.executeQuery();
+                    List<Employee> employees = convertResultSetToEmployees(employeeSet);
                     company.setEmployees(employees);
                 }
                 companies.add(company);

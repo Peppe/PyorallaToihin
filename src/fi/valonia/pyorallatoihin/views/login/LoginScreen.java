@@ -29,7 +29,7 @@ public class LoginScreen extends VerticalLayout {
     public LoginScreen(PyorallaToihinRoot root) {
         this.root = root;
         setMargin(true);
-
+        addStyleName("main");
         Header header = new Header(root);
         Spacer spacer = new Spacer(null, "60px");
         HorizontalLayout instructions = createInfoLayout();
@@ -45,6 +45,7 @@ public class LoginScreen extends VerticalLayout {
         addComponent(spacer2);
         addComponent(layout);
         addComponent(form);
+
         setComponentAlignment(header, Alignment.TOP_CENTER);
         setComponentAlignment(instructions, Alignment.TOP_CENTER);
         setComponentAlignment(layout, Alignment.TOP_CENTER);

@@ -22,8 +22,9 @@ public class InfoBarWithUser extends CssLayout {
             CompanyScreen companyScreen, Employee employee) {
         this.root = root;
         this.companyScreen = companyScreen;
-        setWidth("1000px");
+        setWidth("1200px");
         setHeight("130px");
+        addStyleName("info-bar");
 
         ClickListener markClickListener = new ClickListener() {
             private static final long serialVersionUID = 3470519329527795486L;
@@ -43,7 +44,7 @@ public class InfoBarWithUser extends CssLayout {
                 Messages.press_here_to_mark_today), markClickListener);
         markTodayButton.addStyleName("today-button");
         markTodayButton.setWidth("400px");
-        markTodayButton.setHeight("130px");
+        markTodayButton.setHeight("90px");
         CssLayout info = new CssLayout();
         info.addStyleName("info-bar-right");
         Label nameLabel = new Label(root.getMessages().getString(Messages.hi)

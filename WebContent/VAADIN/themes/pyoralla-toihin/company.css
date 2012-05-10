@@ -7,6 +7,8 @@
 	color: #60B30E;
 	font-size: 1.4em;
 	font-weight:bold;
+	padding-left:60px;
+	padding-right:60px;
 }
 .company-stats {
 	margin-bottom:10px;
@@ -30,6 +32,8 @@
 }
 .info-bar {
 	padding:20px;
+	padding-left:60px;
+	padding-right:60px;
 }
 
 .info-bar .v-label {
@@ -67,13 +71,30 @@
 	vertical-align: middle;
 }
 
+.employee-row {
+	position:relative;
+}
+
+.header-row {
+	margin-left:60px
+}
+.employee-controls {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
 .employee-row .v-label,
 .header-row .v-label {
 	display:inline-block;
 }
 
-.selected {
-	background-color: #ffa;
+.employee-row-row {
+  	margin-left:60px;
+}
+ 
+.selected .employee-row-row {
+	background-color: #ffa;	
 }
 
 .today-button {
@@ -91,7 +112,7 @@
 
 .today-button .v-button-wrap .v-button-caption{
 	white-space: normal;
-	line-height:124px;	
+	line-height:84px;	
 }
 
 .yes, .no {
