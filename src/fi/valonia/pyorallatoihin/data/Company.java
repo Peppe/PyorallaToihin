@@ -151,7 +151,8 @@ public class Company implements Serializable {
             totalKm = totalKm
                     + (employee.getDistance() * employee.getTotalMarkers());
         }
-        return totalKm;
+        double roundedTotal = Math.round(totalKm * 100) / 100d;
+        return roundedTotal;
     }
 
 }

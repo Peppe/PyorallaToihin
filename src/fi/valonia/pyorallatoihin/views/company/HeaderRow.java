@@ -19,10 +19,11 @@ public class HeaderRow extends CssLayout {
     public HeaderRow(PyorallaToihinRoot root, Date startDate, Locale locale) {
         setStyleName("header-row");
         Label name = new Label(root.getMessages().getString(Messages.name));
-        name.setSizeUndefined();
-        name.addStyleName("name");
         Label sport = new Label(root.getMessages().getString(Messages.type));
         Label km = new Label(root.getMessages().getString(Messages.km));
+        name.addStyleName("name");
+        sport.addStyleName("sport");
+        km.addStyleName("km-label");
         SimpleDateFormat weekDay = new SimpleDateFormat("EE", locale);
         SimpleDateFormat date = new SimpleDateFormat("dd.MM", locale);
         Calendar c = Calendar.getInstance();
@@ -52,31 +53,29 @@ public class HeaderRow extends CssLayout {
                 + date.format(c.getTime()), ContentMode.XHTML);
         Label kmTotal = new Label(root.getMessages().getString(
                 Messages.km_total));
+        kmTotal.setStyleName("km-total");
 
-        name.setWidth("150px");
-        sport.setWidth("100px");
-        km.setWidth("40px");
-        day1.setWidth("75px");
-        day2.setWidth("75px");
-        day3.setWidth("75px");
-        day4.setWidth("75px");
-        day5.setWidth("75px");
-        day6.setWidth("75px");
-        day7.setWidth("75px");
-        day8.setWidth("75px");
+        name.setWidth(null);
+        sport.setWidth(null);
+        km.setWidth(null);
+        day1.setWidth(null);
+        day2.setWidth(null);
+        day3.setWidth(null);
+        day4.setWidth(null);
+        day5.setWidth(null);
+        day6.setWidth(null);
+        day7.setWidth(null);
+        day8.setWidth(null);
         kmTotal.setWidth("90px");
 
-        day1.setStyleName("center-label");
-        day2.setStyleName("center-label");
-        day3.setStyleName("center-label");
-        day4.setStyleName("center-label");
-        day5.setStyleName("center-label");
-        day6.setStyleName("center-label");
-        day7.setStyleName("center-label");
-        day8.setStyleName("center-label");
-
-        km.setStyleName("km-label");
-        kmTotal.setStyleName("km-label");
+        day1.setStyleName("center-label day");
+        day2.setStyleName("center-label day");
+        day3.setStyleName("center-label day");
+        day4.setStyleName("center-label day");
+        day5.setStyleName("center-label day");
+        day6.setStyleName("center-label day");
+        day7.setStyleName("center-label day");
+        day8.setStyleName("center-label day");
 
         name.addStyleName(ChameleonTheme.LABEL_H4);
         sport.addStyleName(ChameleonTheme.LABEL_H4);

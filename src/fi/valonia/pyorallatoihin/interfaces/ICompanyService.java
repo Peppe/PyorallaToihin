@@ -1,12 +1,13 @@
 package fi.valonia.pyorallatoihin.interfaces;
 
+import java.io.Serializable;
 import java.util.List;
 
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.data.CompanyInfo;
 import fi.valonia.pyorallatoihin.data.Employee;
 
-public interface ICompanyService {
+public interface ICompanyService extends Serializable {
 
     /**
      * Takes in a generated five letter token which was created along with an
@@ -42,9 +43,15 @@ public interface ICompanyService {
     public void addEmployee(Company company, Employee employee)
             throws EmployeeExistsInCompanyException;
 
-    public void updateEmployee(Company company, Employee employee);
+    public void updateEmployeeDetails(Employee employee);
+
+    public void updateEmployeeDays(Employee employee);
+
+    public void deleteEmployee(Employee employee);
 
     public List<CompanyInfo> getAllCompanyInfos();
 
     public List<Company> getAllCompanies();
+
+    public List<Company> getAllCompanies(int minSize, int maxSize);
 }

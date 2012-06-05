@@ -6,6 +6,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Root;
 import com.vaadin.ui.themes.ChameleonTheme;
 
 import fi.valonia.pyorallatoihin.Messages;
@@ -32,7 +33,9 @@ public class Header extends CssLayout {
         }
     };
 
-    public Header(final PyorallaToihinRoot root) {
+    public Header(boolean loggedIn) {
+        final PyorallaToihinRoot root = (PyorallaToihinRoot) Root
+                .getCurrentRoot();
         addStyleName("header");
         Button valonia = new Button(null);
         valonia.setIcon(new ThemeResource("img/valonia_logo.png"));
@@ -57,11 +60,32 @@ public class Header extends CssLayout {
         swe.addStyleName("flag_se");
         en.addStyleName("flag_en");
         CssLayout language = new CssLayout();
-        language.addStyleName("language-layout");
+
         language.setSizeUndefined();
 
+        if (loggedIn) {
+            CssLayout langAndLogout = new CssLayout();
+            Button logOut = new Button(root.getMessages().getString(
+                    Messages.log_out));
+            logOut.addStyleName(ChameleonTheme.BUTTON_LINK);
+            logOut.addStyleName("log-out");
+            logOut.addListener(new ClickListener() {
+                private static final long serialVersionUID = 4904853297678384550L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    root.setFragment("", true);
+                }
+            });
+            langAndLogout.addComponent(language);
+            langAndLogout.addComponent(logOut);
+            addComponent(langAndLogout);
+            langAndLogout.addStyleName("header-right");
+        } else {
+            addComponent(language);
+            language.addStyleName("header-right");
+        }
         addComponent(valonia);
-        addComponent(language);
         language.addComponent(changeLanguage);
         language.addComponent(fin);
         language.addComponent(swe);

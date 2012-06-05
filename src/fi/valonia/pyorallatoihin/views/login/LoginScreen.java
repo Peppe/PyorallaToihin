@@ -30,7 +30,7 @@ public class LoginScreen extends VerticalLayout {
         this.root = root;
         setMargin(true);
         addStyleName("main");
-        Header header = new Header(root);
+        Header header = new Header(false);
         Spacer spacer = new Spacer(null, "60px");
         HorizontalLayout instructions = createInfoLayout();
         Spacer spacer2 = new Spacer(null, "60px");

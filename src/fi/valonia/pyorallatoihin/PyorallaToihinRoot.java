@@ -7,10 +7,10 @@ import com.vaadin.terminal.WrappedRequest;
 import com.vaadin.ui.Root;
 
 import fi.valonia.pyorallatoihin.backend.CompanyService;
+import fi.valonia.pyorallatoihin.backend.SystemService;
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.interfaces.ICompanyService;
 import fi.valonia.pyorallatoihin.interfaces.ISystemService;
-import fi.valonia.pyorallatoihin.mock.SystemServiceMock;
 import fi.valonia.pyorallatoihin.views.company.CompanyScreen;
 import fi.valonia.pyorallatoihin.views.login.LoginScreen;
 import fi.valonia.pyorallatoihin.views.manage.ManageScreen;
@@ -23,16 +23,16 @@ public class PyorallaToihinRoot extends Root {
     int userId = -1;
     String language = null;
 
-    private ICompanyService companyService;
-    ISystemService systemService = new SystemServiceMock();
+    private final ICompanyService companyService = new CompanyService();;
+    private final ISystemService systemService = new SystemService();;
     Messages messages;
 
     @Override
     protected void init(WrappedRequest request) {
-        companyService = new CompanyService();
-
         String pathInfo = request.getRequestPathInfo();
         if ("/admin".equals(pathInfo)) {
+            setLanguage(null);
+            setCaption(messages.getString(Messages.header_topic));
             showManageScreen();
         } else {
             String fragment = request.getBrowserDetails().getUriFragment();

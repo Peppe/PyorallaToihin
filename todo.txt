@@ -1,17 +1,24 @@
 TODO
-
-show info box with url after registering.
-company stats
-RegisterCompanyForm - henkilÃ¶stÃ¶mÃ¤Ã¤rÃ¤ - better component
 mail after registering
-backend
-edit person
-delete person
-context help for km field
-theme
-competition stats
-export companies to CSV
 push
+tab index on login page (form)
+admin password
+tilastot filter
+Muokkaa tiedot
+Asetukset
+Virheviestit lisŠŠ kŠyttŠjŠ -nŠkymŠssŠ
+paranna etusivun statistiikat
+lisŠŠ hiilidoksidi-tiedot yritysstatistiikkaan
+competition_info kŠŠnnškset
+yrityksen muokkaamismahdollisuudet
+cookie joka muistaa kŠyttŠjŠn jos ei ole urlissa.
+session guard
+testaa safari
+testaa firefox
+testaa IE
+
+MAYBE
+context help for km field
 
 DONE
 localization framework
@@ -19,3 +26,39 @@ extracting strings into constants
 writing fi localization property file
 writing se localization property file
 writing en localization property file
+export companies to CSV
+competition stats
+theme
+show info box with url after registering.
+company stats
+RegisterCompanyForm - henkilšstšmŠŠrŠ - better component
+backend
+edit person
+delete person
+X Kirjaudu sisŠn => sisŠŠn
+X korjaa nimen valinta kun nimi on lisŠtty taulukkoon
+X henkilšstšmŠŠrŠ tekstikentŠksi
+X ohjeet tyhjŠlle yritykselle
+Yrityksen linkki nŠkyville aina
+X "tyšntekijšitŠ" => "tyšntekijšitŠ tyšpaikalla"
+X tyšntekijŠt stats nueroksi
+X km luku ei voi kirjoittaa pilkkuluvulla
+X LisŠŠ -napin hyppiminen
+X tunnus pienillŠ kirjaimilla suoraan urliin pitŠisi toimia
+X Piillota taulukko kokonaan jos tyšpaikkaan ei ole vielŠ ilmoittautunut ykskŠŠn henkilš
+pie chart lajeista
+X etusivu statsit
+X extract CompanyStats strings
+X extract CompetitionStats strings
+X ensimmŠistŠ kertaa -osallistuminen
+X yrityksen nimi yrityssivulle
+X yhteyshenkilšn tiedot yrityssivulle
+X slash fragmentin alkuun
+X kerrat => rastit tekstissŠ
+X "Rasteja (maks.)" ja "Kerrat per tyšntekijŠ" vois toimia paremmin
+X valonian yhteystiedot
+tilastot CSV
+ohjeet ettŠ km on yhteenlaskettu molempiin suuntiin
+lisŠŠ hallintasivu taulukolla
+tyšntekijŠn muokkaamismahdollisuudet
+Vaadin logo ja jensjansson.com linkki

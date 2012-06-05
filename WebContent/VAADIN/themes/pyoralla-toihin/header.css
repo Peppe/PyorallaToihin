@@ -6,7 +6,13 @@
 	display: inline-block;
 }
 
-.language-layout {
+.log-out {
+	float: right;
+	font-size: 14px;
+	padding-top:10px;
+}
+
+.header-right {
 	display: inline-block;
 	float: right;	
 }

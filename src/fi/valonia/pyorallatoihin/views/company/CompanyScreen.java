@@ -34,7 +34,7 @@ public class CompanyScreen extends CssLayout {
         this.company = company;
         addStyleName("main");
         setMargin(true);
-        Header header = new Header(root);
+        Header header = new Header(true);
         CssLayout layout = createLayout();
         addComponent(header);
         addComponent(layout);
@@ -66,8 +66,7 @@ public class CompanyScreen extends CssLayout {
         stats = new CompanyStats(company);
         infoBar = new InfoBarNoUserSelected(root, this);
 
-        CssLayout spacer = new CssLayout();
-        spacer.setHeight("20px");
+        Spacer spacer = new Spacer(null, "20px");
 
         table = new CssLayout();
         table.setStyleName("employee-table");

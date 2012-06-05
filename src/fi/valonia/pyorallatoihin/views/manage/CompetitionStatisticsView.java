@@ -1,12 +1,19 @@
 package fi.valonia.pyorallatoihin.views.manage;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.csvreader.CsvWriter;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
@@ -95,6 +102,39 @@ public class CompetitionStatisticsView extends VerticalLayout {
         return layout;
     }
 
+    private Table createManageTable() {
+        Table table = new Table();
+        table.setSelectable(true);
+        table.setColumnCollapsingAllowed(true);
+        table.setSizeFull();
+        container = new IndexedContainer();
+        container.addContainerProperty("Id", Integer.class, null);
+        container.addContainerProperty("Kausi", Integer.class, null);
+        container.addContainerProperty("Tunnus", String.class, null);
+        container.addContainerProperty("Nimi", String.class, null);
+        container.addContainerProperty("Ilmoitettu koko", Integer.class, null);
+        container.addContainerProperty("Osallistujia", Integer.class, null);
+        container.addContainerProperty("Yhteenlaskettu km", Double.class, null);
+        container.addContainerProperty("Merkintöjä", Integer.class, null);
+        container.addContainerProperty("Maks. merkintöjä", BigDecimal.class,
+                null);
+        container.addContainerProperty("Kerrat per työntekijä",
+                BigDecimal.class, null);
+        container.addContainerProperty("Ensimmäinen kerta", String.class, null);
+        container.addContainerProperty("Kuullut", String.class, null);
+        container.addContainerProperty("Katuosoite", String.class, null);
+        container.addContainerProperty("Postinumero", String.class, null);
+        container.addContainerProperty("Kaupunki", String.class, null);
+        container.addContainerProperty("Yhteyshenkilön nimi", String.class,
+                null);
+        container.addContainerProperty("Yhteyshenkilön sähköposti",
+                String.class, null);
+        container.addContainerProperty("Yhteyshenkilön puhelinnumero",
+                String.class, null);
+        table.setContainerDataSource(container);
+        return table;
+    }
+
     private void loadValues(String size) {
         ICompanyService companyService = ((PyorallaToihinRoot) Root
                 .getCurrentRoot()).getCompanyService();
@@ -115,13 +155,26 @@ public class CompetitionStatisticsView extends VerticalLayout {
             for (Company company : companies) {
                 Item item = container.addItem(company);
                 item.getItemProperty("Id").setValue(company.getId());
+                item.getItemProperty("Kausi").setValue(company.getSeasonId());
                 item.getItemProperty("Tunnus").setValue(company.getToken());
                 item.getItemProperty("Nimi").setValue(company.getName());
-                item.getItemProperty("Kausi").setValue(company.getSeasonId());
-                item.getItemProperty("Ilmoitettu koko").setValue(
-                        company.getSize());
+                int companySize = company.getSize();
+                item.getItemProperty("Ilmoitettu koko").setValue(companySize);
+                int companyMarkers = company.getTotalMarkers();
                 item.getItemProperty("Osallistujia").setValue(
                         company.getEmployees().size());
+                item.getItemProperty("Merkintöjä").setValue(companyMarkers);
+                BigDecimal maxMarkers = new BigDecimal(companySize);
+                maxMarkers = maxMarkers.multiply(new BigDecimal("5"));
+                maxMarkers.setScale(0);
+                item.getItemProperty("Maks. merkintöjä").setValue(maxMarkers);
+
+                BigDecimal markers = new BigDecimal(companyMarkers);
+                markers = markers.divide(new BigDecimal(company.getSize()), 3,
+                        BigDecimal.ROUND_HALF_UP);
+                item.getItemProperty("Kerrat per työntekijä").setValue(markers);
+                item.getItemProperty("Yhteenlaskettu km").setValue(
+                        company.getTotalKm());
                 if (company.isFirstTime()) {
                     item.getItemProperty("Ensimmäinen kerta").setValue("Kyllä");
                 } else {
@@ -139,41 +192,58 @@ public class CompetitionStatisticsView extends VerticalLayout {
                         company.getContactEmail());
                 item.getItemProperty("Yhteyshenkilön puhelinnumero").setValue(
                         company.getContactPhone());
-                item.getItemProperty("Yhteenlaskettu km").setValue(
-                        company.getTotalKm());
-                item.getItemProperty("Merkintöjä").setValue(
-                        company.getTotalMarkers());
             }
         }
     }
 
-    private Table createManageTable() {
-        Table table = new Table();
-        table.setSelectable(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setSizeFull();
-        container = new IndexedContainer();
-        container.addContainerProperty("Id", Integer.class, null);
-        container.addContainerProperty("Tunnus", String.class, null);
-        container.addContainerProperty("Nimi", String.class, null);
-        container.addContainerProperty("Kausi", Integer.class, null);
-        container.addContainerProperty("Ilmoitettu koko", Integer.class, null);
-        container.addContainerProperty("Osallistujia", Integer.class, null);
-        container.addContainerProperty("Ensimmäinen kerta", String.class, null);
-        container.addContainerProperty("Kuullut", String.class, null);
-        container.addContainerProperty("Katuosoite", String.class, null);
-        container.addContainerProperty("Postinumero", String.class, null);
-        container.addContainerProperty("Kaupunki", String.class, null);
-        container.addContainerProperty("Yhteyshenkilön nimi", String.class,
-                null);
-        container.addContainerProperty("Yhteyshenkilön sähköposti",
-                String.class, null);
-        container.addContainerProperty("Yhteyshenkilön puhelinnumero",
-                String.class, null);
-        container.addContainerProperty("Yhteenlaskettu km", Double.class, null);
-        container.addContainerProperty("Merkintöjä", Integer.class, null);
-        table.setContainerDataSource(container);
-        return table;
+    private void createCsvStreamAlt() {
+        try {
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Writer writer = new OutputStreamWriter(stream);
+
+            CsvWriter csv = new CsvWriter(writer, ',');
+
+            Collection<?> containerProperties = container
+                    .getContainerPropertyIds();
+            Iterator<?> propertyIterator = containerProperties.iterator();
+            while (propertyIterator.hasNext()) {
+                Object property = propertyIterator.next();
+                csv.write(property.toString());
+            }
+            csv.endRecord();
+
+            for (Object itemId : container.getItemIds()) {
+                Item item = container.getItem(itemId);
+                propertyIterator = containerProperties.iterator();
+                while (propertyIterator.hasNext()) {
+                    Object property = propertyIterator.next();
+                    Object value = item.getItemProperty(property).getValue();
+                    if (value != null) {
+                        csv.write(String.valueOf(value.toString()));
+                    } else {
+                        csv.write("");
+                    }
+                }
+                csv.endRecord();
+            }
+            csv.close();
+
+            // Create a file to stream to the user
+            StreamResource.StreamSource streamSource = new StreamSource() {
+                private static final long serialVersionUID = 7232269604288254725L;
+
+                @Override
+                public InputStream getStream() {
+                    return new ByteArrayInputStream(stream.toByteArray());
+                }
+            };
+            StreamResource resource = new StreamResource(streamSource,
+                    "tilastot.csv", Root.getCurrentRoot().getApplication());
+            Root.getCurrentRoot().open(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void createCsvStream() {
@@ -183,9 +253,11 @@ public class CompetitionStatisticsView extends VerticalLayout {
         Iterator<?> propertyIterator = containerProperties.iterator();
         while (propertyIterator.hasNext()) {
             Object property = propertyIterator.next();
+            string.append("\"");
             string.append(property.toString());
+            string.append("\"");
             if (propertyIterator.hasNext()) {
-                string.append(',');
+                string.append(",");
             } else {
                 string.append('\n');
             }
@@ -195,9 +267,16 @@ public class CompetitionStatisticsView extends VerticalLayout {
             propertyIterator = containerProperties.iterator();
             while (propertyIterator.hasNext()) {
                 Object property = propertyIterator.next();
-                string.append(item.getItemProperty(property).getValue());
+                Property<?> itemProperty = item.getItemProperty(property);
+                if (itemProperty.getType() == String.class) {
+                    string.append("\"");
+                    string.append(itemProperty.getValue());
+                    string.append("\"");
+                } else {
+                    string.append(itemProperty.getValue());
+                }
                 if (propertyIterator.hasNext()) {
-                    string.append(',');
+                    string.append(",");
                 } else {
                     string.append('\n');
                 }

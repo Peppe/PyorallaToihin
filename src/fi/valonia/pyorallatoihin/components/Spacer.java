@@ -8,5 +8,6 @@ public class Spacer extends CssLayout {
     public Spacer(String width, String height) {
         setWidth(width);
         setHeight(height);
+        addStyleName("spacer");
     }
 }

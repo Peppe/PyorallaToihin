@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.terminal.ThemeResource;
@@ -55,18 +53,15 @@ public class EmployeeRow extends CssLayout {
         this.companyScreen = companyScreen;
         setStyleName("employee-row");
 
-        addListener(new LayoutClickListener() {
-            private static final long serialVersionUID = -3589060577170678837L;
-
-            @Override
-            public void layoutClick(LayoutClickEvent event) {
-                if (event.getClickedComponent() instanceof Button) {
-                    return;
-                }
-                EmployeeRow.this.companyScreen
-                        .selectEmployeeRow(EmployeeRow.this);
-            }
-        });
+        /*
+         * addListener(new LayoutClickListener() { private static final long
+         * serialVersionUID = -3589060577170678837L;
+         * 
+         * @Override public void layoutClick(LayoutClickEvent event) { if
+         * (event.getClickedComponent() instanceof Button) { return; }
+         * EmployeeRow.this.companyScreen .selectEmployeeRow(EmployeeRow.this);
+         * } });
+         */
         paintRow();
     }
 
@@ -79,12 +74,13 @@ public class EmployeeRow extends CssLayout {
         name.addStyleName("name");
         Label sport = new Label(((PyorallaToihinRoot) Root.getCurrentRoot())
                 .getMessages().getString(employee.getSport().toString()));
+        sport.addStyleName("sport");
         Label km = new Label(String.valueOf(employee.getDistance()));
         km.setStyleName("km-label");
 
-        name.setWidth("150px");
-        sport.setWidth("100px");
-        km.setWidth("40px");
+        name.setWidth(null);
+        sport.setWidth(null);
+        km.setWidth(null);
 
         row.addComponent(name);
         row.addComponent(sport);
@@ -93,8 +89,11 @@ public class EmployeeRow extends CssLayout {
         for (int i = 0; i < 8; i++) {
             Button button = new Button(null, clickListener);
             button.setData(i);
+            button.addStyleName("employee-day");
             button.addStyleName((employee.getDays()[i]) ? "yes" : "no");
-            button.setWidth("75px");
+            if (employee.getDays()[i]) {
+                button.setIcon(new ThemeResource("img/check.png"));
+            }
             row.addComponent(button);
             buttons[i] = button;
         }
@@ -147,9 +146,13 @@ public class EmployeeRow extends CssLayout {
             companyScreen.todayToggled();
         }
         if (employee.getDays()[day]) {
-            buttons[day].setStyleName("yes");
+            buttons[day].setStyleName("employee-day");
+            buttons[day].addStyleName("yes");
+            buttons[day].setIcon(new ThemeResource("img/check.png"));
         } else {
-            buttons[day].setStyleName("no");
+            buttons[day].setStyleName("employee-day");
+            buttons[day].addStyleName("no");
+            buttons[day].setIcon(null);
         }
         updateTotal(true);
         return employee.getDays()[day];

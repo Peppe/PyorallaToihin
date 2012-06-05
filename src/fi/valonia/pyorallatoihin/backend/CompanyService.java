@@ -97,6 +97,8 @@ public class CompanyService implements ICompanyService {
             company.setContactName(set.getString("CONTACT_NAME"));
             company.setContactEmail(set.getString("CONTACT_EMAIL"));
             company.setContactPhone(set.getString("CONTACT_PHONE"));
+            company.setFirstTime(set.getBoolean("FIRST_TIME"));
+            company.setHeardFrom(set.getString("HEARD_FROM"));
             return company;
         }
         return null;

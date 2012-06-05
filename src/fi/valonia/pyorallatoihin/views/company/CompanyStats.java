@@ -2,7 +2,6 @@ package fi.valonia.pyorallatoihin.views.company;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Label.ContentMode;
 import com.vaadin.ui.Root;
@@ -13,23 +12,14 @@ import fi.valonia.pyorallatoihin.Messages;
 import fi.valonia.pyorallatoihin.PyorallaToihinRoot;
 import fi.valonia.pyorallatoihin.data.Company;
 
-public class CompanyStats extends VerticalLayout {
+public class CompanyStats extends CssLayout {
     private static final long serialVersionUID = 8524524551101097444L;
 
     private final Company company;
 
-    private final CssLayout actualLayout;
-
     public CompanyStats(Company company) {
         this.company = company;
-        setWidth("1120px");
-        setHeight("150px");
-        actualLayout = new CssLayout();
-        actualLayout.addStyleName("company-stats");
-        actualLayout.setWidth("1000px");
-        actualLayout.setHeight("150px");
-        addComponent(actualLayout);
-        setComponentAlignment(actualLayout, Alignment.MIDDLE_CENTER);
+        addStyleName("company-stats");
         if (company.getTotalMarkers() != 0) {
             fillInCompanyStats();
         } else {
@@ -38,7 +28,19 @@ public class CompanyStats extends VerticalLayout {
     }
 
     private void fillInCompanyStats() {
-        GridLayout layout = new GridLayout(5, 6);
+        CssLayout layout = new CssLayout();
+        CssLayout labels = new CssLayout();
+        CssLayout values = new CssLayout();
+        CssLayout contact = new CssLayout();
+        layout.addStyleName("company-stats-layout");
+        labels.addStyleName("company-stats-labels");
+        values.addStyleName("company-stats-values");
+        contact.addStyleName("company-stats-contact");
+
+        layout.addComponent(labels);
+        layout.addComponent(values);
+        layout.addComponent(contact);
+
         PyorallaToihinRoot root = (PyorallaToihinRoot) Root.getCurrentRoot();
 
         Label employeesLabel = new Label(root.getMessages().getString(
@@ -65,19 +67,18 @@ public class CompanyStats extends VerticalLayout {
         double roundedAvgKm = Math.round(avgKm * 100) / 100d;
         Label avgMarkers = new Label(String.valueOf(roundedAvgKm));
 
-        layout.addComponent(employeesLabel, 0, 0);
-        layout.addComponent(participantsLabel, 0, 1);
-        layout.addComponent(markersLabel, 0, 2);
-        layout.addComponent(kmLabel, 0, 3);
-        layout.addComponent(averageMarkesLabel, 0, 4);
+        labels.addComponent(employeesLabel);
+        labels.addComponent(participantsLabel);
+        labels.addComponent(markersLabel);
+        labels.addComponent(kmLabel);
+        labels.addComponent(averageMarkesLabel);
         // layout.addComponent(averageKmLabel, 0, 5);
 
-        layout.addComponent(employees, 1, 0);
-        layout.addComponent(participants, 1, 1);
-        layout.addComponent(markers, 1, 2);
-        layout.addComponent(totalKm, 1, 3);
-        layout.addComponent(avgMarkers, 1, 4);
-        layout.setSpacing(true);
+        values.addComponent(employees);
+        values.addComponent(participants);
+        values.addComponent(markers);
+        values.addComponent(totalKm);
+        values.addComponent(avgMarkers);
         layout.setMargin(true);
         layout.setWidth("100%");
         layout.setHeight(null);
@@ -97,15 +98,27 @@ public class CompanyStats extends VerticalLayout {
         Label contactEmail = new Label(company.getContactEmail());
         Label contactPhone = new Label(company.getContactPhone());
 
-        layout.addComponent(contactInfoLabel, 3, 0, 4, 0);
-        layout.addComponent(contactNameLabel, 3, 1);
-        layout.addComponent(contactEmailLabel, 3, 2);
-        layout.addComponent(contactPhoneLabel, 3, 3);
+        CssLayout contactInfo = new CssLayout();
+        CssLayout contactLabels = new CssLayout();
+        CssLayout contactValues = new CssLayout();
 
-        layout.addComponent(contactName, 4, 1);
-        layout.addComponent(contactEmail, 4, 2);
-        layout.addComponent(contactPhone, 4, 3);
-        actualLayout.addComponent(layout);
+        contactInfo.addStyleName("company-stats-contact-info");
+        contactLabels.addStyleName("company-stats-contact-labels");
+        contactValues.addStyleName("company-stats-contact-values");
+
+        contact.addComponent(contactInfoLabel);
+        contact.addComponent(contactInfo);
+        contactInfo.addComponent(contactLabels);
+        contactInfo.addComponent(contactValues);
+
+        contactLabels.addComponent(contactNameLabel);
+        contactLabels.addComponent(contactEmailLabel);
+        contactLabels.addComponent(contactPhoneLabel);
+
+        contactValues.addComponent(contactName);
+        contactValues.addComponent(contactEmail);
+        contactValues.addComponent(contactPhone);
+        addComponent(layout);
     }
 
     private void showInstructions() {
@@ -145,6 +158,6 @@ public class CompanyStats extends VerticalLayout {
         wrapper.setSizeFull();
         wrapper.addComponent(layout);
         wrapper.setComponentAlignment(layout, Alignment.MIDDLE_CENTER);
-        actualLayout.addComponent(wrapper);
+        addComponent(wrapper);
     }
 }

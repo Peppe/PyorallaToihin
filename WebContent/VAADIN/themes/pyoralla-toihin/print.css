@@ -1,0 +1,98 @@
+@import url(../pyoralla-toihin/styles.css);
+
+.v-app {
+	background: transparent;
+}
+
+.header-right{
+	display:none;
+}
+
+.info-bar{
+	display:none;
+}
+
+.header {
+	width:660px !important;
+}
+
+.company-layout {
+	width: 660px !important;
+}
+
+.company-name {
+	padding-left:0px;
+	padding-right:0px;
+}
+
+.company-stats {
+	width:660px;
+	padding-left:0px;
+	padding-right:0px;
+}
+
+.spacer {
+	display:none;
+}
+
+.header-row {
+	margin-left:0px;
+}
+
+.employee-row-row {
+	margin-left:0px;
+}
+
+.day {
+	width: 40px;
+}
+
+.employee-day{
+	width:40px;	
+}
+
+.name {
+	width: 120px;
+}
+
+.sport {
+	width: 80px;
+}
+
+.feedback {
+	padding:0;
+	padding-top:20px;
+	position:relative;
+	right:0;
+}
+
+.km-label {
+	width: 40px;
+}
+
+.selected .employee-row-row {
+	background-color: transparent;	
+}
+
+.employee-controls{
+	display:none;
+}
+
+.employee-day {
+	background:none;
+	background-color:transparent;
+	border:none;
+}
+
+.yes.v-button img,
+.yes.v-button .v-icon {
+	margin-left:8px;
+}
+
+
+.company-stats-labels,
+.company-stats-values,
+.company-stats-contact-labels,
+.company-stats-contact-values {
+	width:150px;
+}

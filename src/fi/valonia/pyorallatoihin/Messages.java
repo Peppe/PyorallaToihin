@@ -12,6 +12,7 @@ public class Messages implements Serializable {
 
     public static final String header_topic = "header_topic";
     public static final String log_in = "log_in";
+    public static final String log_out = "log_out";
     public static final String log_in_with_token = "log_in_with_token";
     public static final String register_workplace_into_competition = "register_workplace_into_competition";
     public static final String company_not_found = "company_not_found";
@@ -20,12 +21,14 @@ public class Messages implements Serializable {
     public static final String name = "name";
     public static final String type = "type";
     public static final String km = "km";
+    public static final String km_roundtrip = "km_roundtrip";
     public static final String km_total = "km_total";
     public static final String add_your_name = "add_your_name";
     public static final String or = "or";
     public static final String click_your_name = "click_your_name";
     public static final String mark_in_table = "mark_in_table";
     public static final String add = "add";
+    public static final String save = "save";
     public static final String press_here_to_mark_today = "press_here_to_mark_today";
     public static final String you_came_today_without_a_motor = "you_came_today_without_a_motor";
     public static final String hi = "hi";
@@ -51,6 +54,8 @@ public class Messages implements Serializable {
     public static final String heard_from = "heard_from";
     public static final String first_time = "first_time";
     public static final String register = "register";
+    public static final String feedback = "feedback";
+    public static final String implementation = "implementation";
 
     public static final String company_stats_employees = "company_stats_employees";
     public static final String company_stats_participants = "company_stats_participants";

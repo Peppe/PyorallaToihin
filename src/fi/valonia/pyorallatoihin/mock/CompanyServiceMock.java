@@ -78,8 +78,17 @@ public class CompanyServiceMock implements ICompanyService, Serializable {
     }
 
     @Override
-    public void updateEmployee(Company company, Employee employee) {
+    public void updateEmployeeDetails(Employee employee) {
+    }
+
+    @Override
+    public void updateEmployeeDays(Employee employee) {
         // No need to do anything in the mock as everything is referenced.
+
+    }
+
+    @Override
+    public void deleteEmployee(Employee employee) {
     }
 
     @Override
@@ -99,5 +108,10 @@ public class CompanyServiceMock implements ICompanyService, Serializable {
         List<Company> companies = new ArrayList<Company>();
         companies.add(createFakeCompany());
         return companies;
+    }
+
+    @Override
+    public List<Company> getAllCompanies(int minSize, int maxSize) {
+        return getAllCompanies();
     }
 }

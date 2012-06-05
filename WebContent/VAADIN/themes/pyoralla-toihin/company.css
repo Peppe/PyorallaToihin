@@ -12,16 +12,40 @@
 }
 .company-stats {
 	margin-bottom:10px;
+	width: 1120px;
+	padding-left:60px;
+	padding-right:60px;
 }
-
-.company-stats .v-csslayout-margin{
+.company-stats > .v-csslayout-margin{
 	background-color: rgb(218,227,208);
 	border: 2px solid rgb(118,127,108);
 	
 }
+
+.company-stats-layout,
+.company-stats-labels,
+.company-stats-values,
+.company-stats-contact,
+.company-stats-contact-labels,
+.company-stats-contact-values {
+	display:inline-block;
+	vertical-align: top;        
+}
+
+.company-stats-contact{
+	float:right;
+}
+
+.company-stats-labels,
+.company-stats-values,
+.company-stats-contact-labels,
+.company-stats-contact-values {
+	width:200px;
+}
+
 .company-stats .v-label {
 	padding-left: 5px;
-	
+	padding-top:5px;
 }
 .company-stats-line-height .v-csslayout-container{
 	line-height:126px;
@@ -78,6 +102,32 @@
 .header-row {
 	margin-left:60px
 }
+
+.employee-day{
+	width:75px;	
+}
+
+.day {
+	width:75px;
+}
+
+.name {
+	width: 150px;
+}
+
+.sport {
+	width: 100px;
+}
+
+.km-label {
+	width: 40px;
+}
+
+.km-total {
+	width: 90px;
+	text-align:right;
+}
+
 .employee-controls {
 	position: absolute;
 	left: 0;
@@ -122,9 +172,8 @@
 .yes.v-button .v-button-caption,
 .no.v-button .v-button-caption {
 	height:24px;
-	width:24px;
-display:inline-block;
-
+	width:30px;
+	display:inline-block;
 }
 
 .yes.v-button .v-button-wrap,
@@ -138,18 +187,32 @@ div.no.v-button-down {
 	margin:0;
 	padding:0;
 	border:none;
+	text-overflow: clip;
 }
-
 
 .new-user-layout{
 	display: inline-block;
 	vertical-align: middle;
 }
 
+.yes {
+	text-align:center;
+}
+
+.yes .v-button .v-button-wrap{
+	text-align:center;
+}
+
+.yes.v-button img,
+.yes.v-button .v-icon {
+	margin-left:24px;
+}
+	
+/*
 .yes.v-button .v-button-wrap .v-button-caption {
 	background:transparent url('img/check.png') no-repeat 0 0;
 }
-
+*/
 .km-label {
 	text-align:right;
 	margin-right:10px;
