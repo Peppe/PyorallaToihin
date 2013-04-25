@@ -72,6 +72,7 @@ public class Messages implements Serializable {
     public static final String competition_company_workers = "competition_company_workers";
     public static final String competition_company_participants = "competition_company_participants";
     public static final String competition_company_markers = "competition_company_markers";
+    public static final String competition_company_ratio = "competition_company_ratio";
 
     public static final String heard_from_email_internal = "heard_from_email_internal";
     public static final String heard_from_email_external = "heard_from_email_external";

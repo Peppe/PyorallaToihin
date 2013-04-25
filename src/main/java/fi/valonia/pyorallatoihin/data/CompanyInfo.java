@@ -7,6 +7,7 @@ public class CompanyInfo {
     private int size;
     private int registered;
     private int totalMarkers;
+    private double ratio;
 
     public int getId() {
         return id;
@@ -48,4 +49,11 @@ public class CompanyInfo {
         this.totalMarkers = totalMarkers;
     }
 
+    public double getRatio() {
+		return ratio;
+	}
+    
+    public void setRatio(double ratio) {
+		this.ratio = ratio;
+	}
 }

@@ -297,7 +297,7 @@ public class CompanyService implements ICompanyService {
             // conn = cp.getConnection();
             conn = getConnection();
             Statement stmt = conn.createStatement();
-            String SQL = "SELECT company.id, company.name, company.size, count(*) AS REGISTERED,"
+            String innerQuery = "SELECT company.id, company.name, company.size, count(*) AS REGISTERED, "
                     + "count(nullif(employee.day1, 0)) + "
                     + "count(nullif(employee.day2, 0)) + "
                     + "count(nullif(employee.day3, 0)) + "
@@ -305,16 +305,17 @@ public class CompanyService implements ICompanyService {
                     + "count(nullif(employee.day5, 0)) + "
                     + "count(nullif(employee.day6, 0)) + "
                     + "count(nullif(employee.day7, 0)) + "
-                    + "count(nullif(employee.day8, 0)) AS TOTALMARKERS "
-                    + "FROM company "
-                    + "LEFT JOIN employee "
-                    + "ON company.id=employee.company_id "
-                    + "WHERE SEASON_ID ="
+                    + "count(nullif(employee.day8, 0)) AS TOTALMARKERS"
+                    + " FROM company"
+                    + " LEFT JOIN employee"
+                    + " ON company.id=employee.company_id"
+                    + " WHERE SEASON_ID ="
                     + seasonId
-                    + " "
-                    + "group by company.id "
-                    + "order by totalmarkers desc "
-                    + "limit 5;";
+                    + " GROUP BY company.id ";
+            String SQL = "SELECT id, name, size, registered, totalmarkers, round(totalmarkers*1.0/size, 2) as RATIO"
+                    + " FROM (" + innerQuery + ")"
+                    + " ORDER by ratio desc "
+                    + " LIMIT 5;";
             System.out.println("query: " + SQL);
             ResultSet set = stmt.executeQuery(SQL);
             List<CompanyInfo> companies = new ArrayList<CompanyInfo>();
@@ -325,6 +326,7 @@ public class CompanyService implements ICompanyService {
                 company.setSize(set.getInt("SIZE"));
                 company.setRegistered(set.getInt("REGISTERED"));
                 company.setTotalMarkers(set.getInt("TOTALMARKERS"));
+                company.setRatio(set.getDouble("RATIO"));
                 companies.add(company);
             }
             return companies;

@@ -22,7 +22,7 @@ public class CompetitionStats extends CssLayout {
 
         PyorallaToihinUI root = PyorallaToihinUI.get();
 
-        GridLayout layout = new GridLayout(5, 1);
+        GridLayout layout = new GridLayout(6, 1);
         Label position = new Label(root.getMessages().getString(
                 Messages.competition_company_position));
         Label name = new Label(root.getMessages().getString(
@@ -33,18 +33,22 @@ public class CompetitionStats extends CssLayout {
                 Messages.competition_company_participants));
         Label markers = new Label(root.getMessages().getString(
                 Messages.competition_company_markers));
+        Label ratio = new Label(root.getMessages().getString(
+        		Messages.competition_company_ratio));
 
         position.addStyleName(ChameleonTheme.LABEL_H4);
         name.addStyleName(ChameleonTheme.LABEL_H4);
         workers.addStyleName(ChameleonTheme.LABEL_H4);
         participants.addStyleName(ChameleonTheme.LABEL_H4);
         markers.addStyleName(ChameleonTheme.LABEL_H4);
+        ratio.addStyleName(ChameleonTheme.LABEL_H4);
 
         layout.addComponent(position);
         layout.addComponent(name);
         layout.addComponent(workers);
         layout.addComponent(participants);
         layout.addComponent(markers);
+        layout.addComponent(ratio);
         int i = 1;
         if (companies != null) {
             for (CompanyInfo companyInfo : companies) {
@@ -55,11 +59,13 @@ public class CompetitionStats extends CssLayout {
                         + "");
                 Label compMarkers = new Label(companyInfo.getTotalMarkers()
                         + "");
+                Label compRatio = new Label(companyInfo.getRatio() + "");
                 layout.addComponent(compPosition);
                 layout.addComponent(compName);
                 layout.addComponent(compWorkers);
                 layout.addComponent(compParticipants);
                 layout.addComponent(compMarkers);
+                layout.addComponent(compRatio);
             }
         }
         layout.setMargin(true);
