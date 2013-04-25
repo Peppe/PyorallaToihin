@@ -1,6 +1,6 @@
 .project
 .classpath
 .settings/
-.target/
+target/
 src/Setup.properties
 WebContent/WEB-INF/classes/
