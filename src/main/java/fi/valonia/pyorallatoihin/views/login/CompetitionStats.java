@@ -20,20 +20,20 @@ public class CompetitionStats extends CssLayout {
         setWidth("600px");
         setHeight("150px");
 
-        PyorallaToihinUI root = PyorallaToihinUI.get();
+        PyorallaToihinUI ui = PyorallaToihinUI.get();
 
         GridLayout layout = new GridLayout(6, 1);
-        Label position = new Label(root.getMessages().getString(
+        Label position = new Label(ui.getMessages().getString(
                 Messages.competition_company_position));
-        Label name = new Label(root.getMessages().getString(
+        Label name = new Label(ui.getMessages().getString(
                 Messages.competition_company_name));
-        Label workers = new Label(root.getMessages().getString(
+        Label workers = new Label(ui.getMessages().getString(
                 Messages.competition_company_workers));
-        Label participants = new Label(root.getMessages().getString(
+        Label participants = new Label(ui.getMessages().getString(
                 Messages.competition_company_participants));
-        Label markers = new Label(root.getMessages().getString(
+        Label markers = new Label(ui.getMessages().getString(
                 Messages.competition_company_markers));
-        Label ratio = new Label(root.getMessages().getString(
+        Label ratio = new Label(ui.getMessages().getString(
         		Messages.competition_company_ratio));
 
         position.addStyleName(ChameleonTheme.LABEL_H4);
