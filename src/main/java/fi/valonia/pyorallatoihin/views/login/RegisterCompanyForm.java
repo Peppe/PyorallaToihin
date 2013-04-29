@@ -26,20 +26,25 @@ import fi.valonia.pyorallatoihin.components.Spacer;
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.interfaces.CompanyNameInUseException;
 
+@SuppressWarnings("serial")
 public class RegisterCompanyForm extends VerticalLayout {
-    private static final long serialVersionUID = 3185151633819175680L;
 
     Company company = new Company();
     FieldGroup fieldGroup = new FieldGroup(new BeanItem<Company>(company));
     private Label errorMessage = null;
     private TextField companyName;
+    private TextField companySize;
+    private TextField companyStreet;
+    private TextField companyZip;
+    private TextField companyCity;
     private TextField contactPersonName;
     private TextField contactPersonEmail;
+    private TextField contactPersonPhone;
+    private TextField heardFromOther;
 
     private final PyorallaToihinUI root;
 
     private final ClickListener registerListener = new ClickListener() {
-        private static final long serialVersionUID = 7715075013147891378L;
 
         @Override
         public void buttonClick(ClickEvent event) {
@@ -60,9 +65,21 @@ public class RegisterCompanyForm extends VerticalLayout {
                 if (contactPersonName.getValue() == null
                         || contactPersonName.getValue().equals("")
                         || contactPersonEmail.getValue() == null
-                        || contactPersonEmail.getValue().equals("")) {
+                        || contactPersonEmail.getValue().equals("")
+                		|| contactPersonPhone.getValue() == null
+                		|| contactPersonPhone.getValue().equals("")) {
                     showError(root.getMessages().getString(
                             Messages.contact_person_info_can_not_be_empty));
+                    return;
+                }
+                if (companyStreet.getValue() == null
+                        || companyStreet.getValue().equals("")
+                        || companyZip.getValue() == null
+                        || companyZip.getValue().equals("")
+                        || companyCity.getValue() == null
+                        || companyCity.getValue().equals("")) {
+                    showError(root.getMessages().getString(
+                            Messages.company_address_can_not_be_empty));
                     return;
                 }
                 fieldGroup.commit();
@@ -80,10 +97,6 @@ public class RegisterCompanyForm extends VerticalLayout {
             }
         }
     };
-
-    private TextField companySize;
-
-    private TextField heardFromOther;
 
     public RegisterCompanyForm(PyorallaToihinUI root) {
         this.root = root;
@@ -132,19 +145,20 @@ public class RegisterCompanyForm extends VerticalLayout {
         companySize.setWidth("100%");
         companySize.setRequired(true);
 
-        TextField companyStreet = new TextField(root.getMessages().getString(
-                Messages.company_address));
-        companyStreet.setWidth("100%");
-        companyStreet.setInputPrompt(root.getMessages().getString(
+        companyStreet = new TextField(root.getMessages().getString(
                 Messages.company_street));
-        TextField companyZip = new TextField();
-        companyZip.setInputPrompt(root.getMessages().getString(
+        companyStreet.setWidth("100%");
+        companyStreet.setRequired(true);
+        companyZip = new TextField();
+        companyZip.setCaption(root.getMessages().getString(
                 Messages.company_zip));
         companyZip.setColumns(7);
-        TextField companyCity = new TextField();
+        companyZip.setRequired(true);
+        companyCity = new TextField();
         companyCity.setWidth("100%");
-        companyCity.setInputPrompt(root.getMessages().getString(
+        companyCity.setCaption(root.getMessages().getString(
                 Messages.company_city));
+        companyCity.setRequired(true);
         HorizontalLayout zipAndCity = new HorizontalLayout();
         zipAndCity.addComponent(companyZip);
         zipAndCity.addComponent(companyCity);
@@ -164,30 +178,31 @@ public class RegisterCompanyForm extends VerticalLayout {
                 Messages.contact_person_email));
         contactPersonEmail.setRequired(true);
         contactPersonEmail.setWidth("100%");
-        TextField contactPersonPhone = new TextField(root.getMessages()
+        contactPersonPhone = new TextField(root.getMessages()
                 .getString(Messages.contact_person_phone));
         contactPersonPhone.setWidth("100%");
+        contactPersonPhone.setRequired(true);
 
         // TODO translate
         final ComboBox heardFrom = new ComboBox(root.getMessages().getString(
                 Messages.heard_from));
         heardFrom.addContainerProperty("caption", String.class, "");
         Item item;
-        item = heardFrom.addItem("S�hk�postilla sis�isesti");
+        item = heardFrom.addItem("Sähköpostilla sisäisesti");
         item.getItemProperty("caption").setValue(
                 root.getMessages()
                         .getString(Messages.heard_from_email_internal));
-        item = heardFrom.addItem("S�hk�postilla ulkoisesti");
+        item = heardFrom.addItem("Sähköpostilla ulkoisesti");
         item.getItemProperty("caption").setValue(
                 root.getMessages()
                         .getString(Messages.heard_from_email_external));
-        item = heardFrom.addItem("Kirjeen�");
+        item = heardFrom.addItem("Kirjeenä");
         item.getItemProperty("caption").setValue(
                 root.getMessages().getString(Messages.heard_from_letter));
-        item = heardFrom.addItem("Internetist�");
+        item = heardFrom.addItem("Internetistä");
         item.getItemProperty("caption").setValue(
                 root.getMessages().getString(Messages.heard_from_internet));
-        item = heardFrom.addItem("Lehdest�");
+        item = heardFrom.addItem("Lehdestä");
         item.getItemProperty("caption").setValue(
                 root.getMessages().getString(Messages.heard_from_paper));
         item = heardFrom.addItem("Radiosta");

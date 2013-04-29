@@ -26,6 +26,8 @@ public class ManageScreen extends VerticalLayout implements ClickListener {
         buttons.addComponent(statsButton);
         buttons.addComponent(companiesButton);
         buttons.addComponent(settingsButton);
+        companiesButton.setEnabled(false);
+        settingsButton.setEnabled(false);
         panel = new Panel();
         panel.setSizeFull();
         panel.setContent(stats);

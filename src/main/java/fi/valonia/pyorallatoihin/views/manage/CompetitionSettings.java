@@ -8,6 +8,6 @@ public class CompetitionSettings extends VerticalLayout {
 
     public CompetitionSettings() {
         setMargin(true);
-        addComponent(new Label("Kilpailun muokkaaminen ei vielä tehty"));
+        addComponent(new Label("Kilpailun muokkaaminen ei viel√§ tehty"));
     }
 }

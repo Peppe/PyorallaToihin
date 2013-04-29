@@ -1,25 +1,13 @@
 package fi.valonia.pyorallatoihin.views.manage;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-import com.csvreader.CsvWriter;
+import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,19 +23,20 @@ import fi.valonia.pyorallatoihin.PyorallaToihinUI;
 import fi.valonia.pyorallatoihin.data.Company;
 import fi.valonia.pyorallatoihin.interfaces.ICompanyService;
 
+@SuppressWarnings("serial")
 public class CompetitionStatisticsView extends VerticalLayout {
-    private static final long serialVersionUID = 5290566709225821908L;
     public static final String sizeAll = "Kaikki";
     public static final String size1to4 = "1 - 4 työntekijää";
     public static final String size5to20 = "5 - 20 työntekijää";
     public static final String size21to100 = "21 - 100 työntekijää";
     public static final String sizeOver100 = "Yli 100 työntekijää";
+    private Table table;
     private IndexedContainer container;
 
     public CompetitionStatisticsView() {
         Layout filters = createFilterPanel();
-        Table table = createManageTable();
-        Layout buttons = createCsvPanel();
+        table = createManageTable();
+        Layout buttons = createExportButton();
         addComponent(filters);
         addComponent(table);
         addComponent(buttons);
@@ -86,17 +75,19 @@ public class CompetitionStatisticsView extends VerticalLayout {
         return layout;
     }
 
-    private Layout createCsvPanel() {
+	private Layout createExportButton() {
         HorizontalLayout layout = new HorizontalLayout();
-        Button button = new Button("Lataa tiedot", new ClickListener() {
-            private static final long serialVersionUID = 8543929363951552224L;
+        final Button excelExportButton = new Button("Vie tiedot exceliin");
+        excelExportButton.addClickListener(new ClickListener() {
+            private ExcelExport excelExport;
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                createCsvStream();
+            public void buttonClick(final ClickEvent event) {
+                excelExport = new ExcelExport(table);
+                excelExport.export();
+                excelExport.setDisplayTotals(false);
             }
         });
-        layout.addComponent(button);
+        layout.addComponent(excelExportButton);
         layout.setSizeUndefined();
         layout.setSpacing(true);
         return layout;
@@ -135,7 +126,8 @@ public class CompetitionStatisticsView extends VerticalLayout {
         return table;
     }
 
-    private void loadValues(String size) {
+    @SuppressWarnings("unchecked")
+	private void loadValues(String size) {
         ICompanyService companyService = PyorallaToihinUI.get().getCompanyService();
         List<Company> companies = null;
         if (size.equals(size1to4)) {
@@ -193,108 +185,5 @@ public class CompetitionStatisticsView extends VerticalLayout {
                         company.getContactPhone());
             }
         }
-    }
-
-    private void createCsvStreamAlt() {
-        try {
-            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Writer writer = new OutputStreamWriter(stream);
-
-            CsvWriter csv = new CsvWriter(writer, ',');
-
-            Collection<?> containerProperties = container
-                    .getContainerPropertyIds();
-            Iterator<?> propertyIterator = containerProperties.iterator();
-            while (propertyIterator.hasNext()) {
-                Object property = propertyIterator.next();
-                csv.write(property.toString());
-            }
-            csv.endRecord();
-
-            for (Object itemId : container.getItemIds()) {
-                Item item = container.getItem(itemId);
-                propertyIterator = containerProperties.iterator();
-                while (propertyIterator.hasNext()) {
-                    Object property = propertyIterator.next();
-                    Object value = item.getItemProperty(property).getValue();
-                    if (value != null) {
-                        csv.write(String.valueOf(value.toString()));
-                    } else {
-                        csv.write("");
-                    }
-                }
-                csv.endRecord();
-            }
-            csv.close();
-
-            // Create a file to stream to the user
-            StreamResource.StreamSource streamSource = new StreamSource() {
-                private static final long serialVersionUID = 7232269604288254725L;
-
-                @Override
-                public InputStream getStream() {
-                    return new ByteArrayInputStream(stream.toByteArray());
-                }
-            };
-            StreamResource resource = new StreamResource(streamSource,
-                    "tilastot.csv");
-            
-            //TODO fix this
-            Page.getCurrent().open(resource, null, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void createCsvStream() {
-        final StringBuilder string = new StringBuilder();
-
-        Collection<?> containerProperties = container.getContainerPropertyIds();
-        Iterator<?> propertyIterator = containerProperties.iterator();
-        while (propertyIterator.hasNext()) {
-            Object property = propertyIterator.next();
-            string.append("\"");
-            string.append(property.toString());
-            string.append("\"");
-            if (propertyIterator.hasNext()) {
-                string.append(",");
-            } else {
-                string.append('\n');
-            }
-        }
-        for (Object itemId : container.getItemIds()) {
-            Item item = container.getItem(itemId);
-            propertyIterator = containerProperties.iterator();
-            while (propertyIterator.hasNext()) {
-                Object property = propertyIterator.next();
-                Property<?> itemProperty = item.getItemProperty(property);
-                if (itemProperty.getType() == String.class) {
-                    string.append("\"");
-                    string.append(itemProperty.getValue());
-                    string.append("\"");
-                } else {
-                    string.append(itemProperty.getValue());
-                }
-                if (propertyIterator.hasNext()) {
-                    string.append(",");
-                } else {
-                    string.append('\n');
-                }
-            }
-        }
-
-        StreamResource.StreamSource streamSource = new StreamSource() {
-            private static final long serialVersionUID = 7232269604288254725L;
-
-            @Override
-            public InputStream getStream() {
-                return new ByteArrayInputStream(string.toString().getBytes());
-            }
-        };
-        StreamResource resource = new StreamResource(streamSource,
-                "tilastot.csv");
-        //TODO fix this
-        Page.getCurrent().open(resource, null, false);
     }
 }

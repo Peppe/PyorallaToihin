@@ -8,6 +8,6 @@ public class CompanyEditView extends VerticalLayout {
 
     public CompanyEditView() {
         setMargin(true);
-        addComponent(new Label("Yritysten muokkaaminen ei vielä tehty"));
+        addComponent(new Label("Yritysten muokkaaminen ei viel√§ tehty"));
     }
 }
