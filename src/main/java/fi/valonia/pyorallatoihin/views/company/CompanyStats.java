@@ -80,8 +80,6 @@ public class CompanyStats extends CssLayout {
         values.addComponent(markers);
         values.addComponent(totalKm);
         values.addComponent(avgMarkers);
-        // TODO margins removed because of API changes in Vaadin 7. Add back in theme
-        // layout.setMargin(true);
         layout.setWidth("100%");
         layout.setHeight(null);
         // layout.addComponent(averageKmLabel, 5, 1, 5);
@@ -129,9 +127,7 @@ public class CompanyStats extends CssLayout {
 
         Label workplaceRegistered = new Label(root.getMessages().getString(
                 Messages.company_registed_to_competition));
-        // TODO: Page.getLocation() is probably wrong
-        Label address = new Label(Page.getCurrent().getLocation()
-                + "#/" + token);
+        Label address = new Label(Page.getCurrent().getLocation().toString());
         address.addStyleName(ChameleonTheme.LABEL_H2);
         address.addStyleName(ChameleonTheme.LABEL_COLOR);
         Label shareToken = new Label(root.getMessages().getString(

@@ -15,12 +15,12 @@
 	width: 1120px;
 	padding-left:60px;
 	padding-right:60px;
-}
-
-.company-stats-layout {
 	background-color: rgb(218,227,208);
 	border: 2px solid rgb(118,127,108);
 	padding:10px;
+}
+
+.company-stats-layout {
 }
 
 div.v-csslayout.company-stats-layout,
@@ -143,6 +143,7 @@ div.v-csslayout.add-user-button-margins {
 
 .employee-row-row {
   	margin-left:60px;
+  	line-height:29px;
 }
  
 .selected .employee-row-row {
@@ -231,6 +232,7 @@ div.no.v-button-down {
     user-select: none;
 }
 .employee-table .v-label{
+	line-height:29px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

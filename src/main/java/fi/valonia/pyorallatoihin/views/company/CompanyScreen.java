@@ -33,8 +33,6 @@ public class CompanyScreen extends CssLayout {
         this.root = root;
         this.company = company;
         addStyleName("main");
-        // TODO margins removed because of API changes in Vaadin 7. Add back in theme
-        // setMargin(true);
         Header header = new Header(true);
         CssLayout layout = createLayout();
         addComponent(header);
@@ -60,8 +58,6 @@ public class CompanyScreen extends CssLayout {
         layout = new CssLayout();
         layout.setWidth("1120px");
         layout.addStyleName("company-layout");
-        //TODO: Page.getLocation() is probably wrong
-        //TODO: taken away: + "#/" + company.getToken()
         Label companyName = new Label(company.getName() + " - "
                 + Page.getCurrent().getLocation());
         companyName.addStyleName("company-name");
