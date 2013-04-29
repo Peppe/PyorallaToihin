@@ -35,6 +35,7 @@ public class Messages implements Serializable {
     public static final String remember_to_bookmark = "remember_to_bookmark";
     public static final String company_name_can_not_be_empty = "company_name_can_not_be_empty";
     public static final String company_size_numeric = "company_size_numeric";
+    public static final String company_address_can_not_be_empty = "company_address_can_not_be_empty";
     public static final String contact_person_info_can_not_be_empty = "contact_person_info_can_not_be_empty";
     public static final String company_name_already_exists = "company_name_already_exists";
     public static final String company_info = "company_info";
