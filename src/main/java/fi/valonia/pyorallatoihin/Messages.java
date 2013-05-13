@@ -52,6 +52,7 @@ public class Messages implements Serializable {
     public static final String contact_person_email = "contact_person_email";
     public static final String contact_person_phone = "contact_person_phone";
     public static final String contact_person_fax = "contact_person_fax";
+    public static final String contact_person_web = "contact_person_web";
     public static final String heard_from = "heard_from";
     public static final String first_time = "first_time";
     public static final String register = "register";

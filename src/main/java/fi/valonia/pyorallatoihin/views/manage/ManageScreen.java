@@ -56,6 +56,5 @@ public class ManageScreen extends VerticalLayout implements ClickListener {
             }
             panel.setContent(settings);
         }
-        panel.requestRepaint();
     }
 }

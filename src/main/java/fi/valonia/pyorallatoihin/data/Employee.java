@@ -65,28 +65,37 @@ public class Employee implements Serializable {
         return total;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        // check for self-comparison
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof Employee)) {
-            return false;
-            // Alternative to the above line :
-            // if ( aThat == null || aThat.getClass() != this.getClass() )
-            // return false;
-        }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(distance);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((sport == null) ? 0 : sport.hashCode());
+		return result;
+	}
 
-        // cast to native object is now safe
-        Employee otherEmployee = (Employee) other;
-
-        // now a proper field-by-field evaluation can be made
-        return getName().equals(otherEmployee.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Employee other = (Employee) obj;
+		if (Double.doubleToLongBits(distance) != Double
+				.doubleToLongBits(other.distance))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (sport != other.sport)
+			return false;
+		return true;
+	}
 }

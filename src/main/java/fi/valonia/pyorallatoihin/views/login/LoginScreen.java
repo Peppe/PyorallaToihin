@@ -153,29 +153,29 @@ public class LoginScreen extends VerticalLayout {
                 Messages.contact_person_name));
         Label contactPhoneLabel = new Label(root.getMessages().getString(
                 Messages.contact_person_phone));
-        Label contactEmailLabel = new Label(root.getMessages().getString(
-                Messages.contact_person_email));
         Label contactFaxLabel = new Label(root.getMessages().getString(
                 Messages.contact_person_fax));
+        Label contactWebLabel = new Label(root.getMessages().getString(
+        		Messages.contact_person_web));
         contactInfoLabel.addStyleName(ChameleonTheme.LABEL_H4);
         contactNameLabel.addStyleName(ChameleonTheme.LABEL_H4);
         contactPhoneLabel.addStyleName(ChameleonTheme.LABEL_H4);
-        contactEmailLabel.addStyleName(ChameleonTheme.LABEL_H4);
+        contactWebLabel.addStyleName(ChameleonTheme.LABEL_H4);
         contactFaxLabel.addStyleName(ChameleonTheme.LABEL_H4);
 
         Label contactName = new Label("Paula Väisänen");
         Label contactPhone = new Label("044 907 5986");
-        Label contactEmail = new Label("paula.vaisanen@valonia.fi");
         Label contactFax = new Label("02 262 3450");
+        Label contactWeb = new Label("<a href=\"http://www.valonia.fi/pyorallatoihin\">www.valonia.fi/pyorallatoihin</a>", ContentMode.HTML);
 
         contactInfoLabel.setSizeUndefined();
         contactNameLabel.setSizeUndefined();
         contactPhoneLabel.setSizeUndefined();
-        contactEmailLabel.setSizeUndefined();
+        contactWebLabel.setSizeUndefined();
         contactFaxLabel.setSizeUndefined();
         contactName.setSizeUndefined();
         contactPhone.setSizeUndefined();
-        contactEmail.setSizeUndefined();
+        contactWeb.setSizeUndefined();
         contactFax.setSizeUndefined();
 
         Spacer spacer = new Spacer("20px", null);
@@ -183,19 +183,19 @@ public class LoginScreen extends VerticalLayout {
         contactInfo.addComponent(contactInfoLabel, 0, 0, 2, 0);
         contactInfo.addComponent(contactNameLabel, 0, 1);
         contactInfo.addComponent(contactPhoneLabel, 0, 2);
-        contactInfo.addComponent(contactEmailLabel, 0, 3);
-        contactInfo.addComponent(contactFaxLabel, 0, 4);
+        contactInfo.addComponent(contactFaxLabel, 0, 3);
+        contactInfo.addComponent(contactWebLabel, 0, 4);
 
         contactInfo.addComponent(spacer, 1, 1, 1, 4);
 
         contactInfo.addComponent(contactName, 2, 1);
         contactInfo.addComponent(contactPhone, 2, 2);
-        contactInfo.addComponent(contactEmail, 2, 3);
-        contactInfo.addComponent(contactFax, 2, 4);
+        contactInfo.addComponent(contactFax, 2, 3);
+        contactInfo.addComponent(contactWeb, 2, 4);
 
         contactInfo.setComponentAlignment(contactName, Alignment.MIDDLE_RIGHT);
         contactInfo.setComponentAlignment(contactPhone, Alignment.MIDDLE_RIGHT);
-        contactInfo.setComponentAlignment(contactEmail, Alignment.MIDDLE_RIGHT);
+        contactInfo.setComponentAlignment(contactWeb, Alignment.MIDDLE_RIGHT);
         contactInfo.setComponentAlignment(contactFax, Alignment.MIDDLE_RIGHT);
         return contactInfo;
     }
